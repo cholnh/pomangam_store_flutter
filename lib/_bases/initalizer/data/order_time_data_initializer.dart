@@ -4,13 +4,13 @@ import 'package:pomangam/providers/order/time/order_time_model.dart';
 import 'package:provider/provider.dart';
 
 Future<bool> orderTimeDataInitialize({
-  int sIdx
+  int dIdx
 }) async
 => logProcess(
     name: 'orderTimeDataInitialize',
     function: () async {
       OrderTimeModel orderTimeModel = Get.context.read<OrderTimeModel>();
-      await orderTimeModel.fetch(forceUpdate: true, sIdx: sIdx);
+      await orderTimeModel.fetch(forceUpdate: true, dIdx: dIdx);
       return true;
     }
 );

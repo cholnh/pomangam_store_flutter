@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pomangam/_bases/i18n/messages.dart';
+import 'package:pomangam/views/splash_page.dart';
 
 class ErrorPage extends StatelessWidget {
   final String contents;
@@ -20,6 +22,15 @@ class ErrorPage extends StatelessWidget {
                   Text(Messages.errorMsg, style: TextStyle(fontSize: 26)),
                   Text(contents, style: TextStyle(fontSize: 20)),
                   const Padding(padding: EdgeInsets.only(bottom: 20)),
+                  GestureDetector(
+                    onTap: () {
+                      Get.offAll(SplashPage());
+                    },
+                    child: Text('재연결', style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black
+                    )),
+                  )
                 ],
               ),
             ),

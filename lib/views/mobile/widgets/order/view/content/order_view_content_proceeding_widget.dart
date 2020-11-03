@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class OrderViewContentProceedingWidget extends StatelessWidget {
 
+  final int idx;
   final int boxNumber;
-  final bool isRequirement;
+  final bool hasRequirement;
+  final bool hasSubItems;
   final String title;
   final String subtitle;
   final String subtitle2;
@@ -13,8 +15,10 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
   final CountDownController _controller = CountDownController();
 
   OrderViewContentProceedingWidget({
+    this.idx,
     this.boxNumber,
-    this.isRequirement = false,
+    this.hasRequirement = false,
+    this.hasSubItems = false,
     this.title,
     this.subtitle,
     this.subtitle2,
@@ -42,8 +46,8 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
                         fontSize: 23,
                         color: Theme.of(context).primaryColor
                     )),
-                    if(isRequirement) SizedBox(width: 15),
-                    if(isRequirement) Container(
+                    if(hasRequirement) SizedBox(width: 15),
+                    if(hasRequirement) Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -55,22 +59,36 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
                           color: Theme.of(context).textTheme.headline1.color,
                           fontSize: 12
                       )),
+                    ),
+                    if(hasSubItems) SizedBox(width: 15),
+                    if(hasSubItems) Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).textTheme.headline1.color,
+                            width: 0.5
+                        ),
+                      ),
+                      child: Text('서브메뉴', style: TextStyle(
+                          color: Theme.of(context).textTheme.headline1.color,
+                          fontSize: 12
+                      )),
                     )
                   ],
                 ),
                 SizedBox(height: 10),
-                Text('${title}', style: TextStyle(
+                Text('$title', style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 23,
                     color: Colors.black
                 )),
                 SizedBox(height: 5),
-                Text('${subtitle}', style: TextStyle(
+                Text('$subtitle', style: TextStyle(
                     fontSize: 15,
                     color: Colors.black
                 )),
                 SizedBox(height: 5),
-                Text('${subtitle2}', style: TextStyle(
+                Text('$subtitle2', style: TextStyle(
                     fontSize: 15,
                     color: Colors.black
                 ))
@@ -91,7 +109,6 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
             isReverseAnimation: false,
             isTimerTextShown: true,
             onComplete: () {
-              print('Countdown Ended');
             },
           )
         ],

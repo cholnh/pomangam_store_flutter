@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 
 class OrderViewContentDoneWidget extends StatelessWidget {
 
+  final int idx;
   final int boxNumber;
-  final bool isRequirement;
+  final bool hasRequirement;
+  final bool hasSubItems;
   final String title;
   final String subtitle;
   final String subtitle2;
   final String status;
 
   OrderViewContentDoneWidget({
+    this.idx,
     this.boxNumber,
-    this.isRequirement = false,
+    this.hasRequirement = false,
+    this.hasSubItems = false,
     this.title,
     this.subtitle,
     this.subtitle2,
@@ -38,8 +42,8 @@ class OrderViewContentDoneWidget extends StatelessWidget {
                         fontSize: 23,
                         color: Theme.of(context).primaryColor
                     )),
-                    if(isRequirement) SizedBox(width: 15),
-                    if(isRequirement) Container(
+                    if(hasRequirement) SizedBox(width: 15),
+                    if(hasRequirement) Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -48,6 +52,20 @@ class OrderViewContentDoneWidget extends StatelessWidget {
                         ),
                       ),
                       child: Text('요청사항', style: TextStyle(
+                          color: Theme.of(context).textTheme.headline1.color,
+                          fontSize: 12
+                      )),
+                    ),
+                    if(hasSubItems) SizedBox(width: 15),
+                    if(hasSubItems) Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).textTheme.headline1.color,
+                            width: 0.5
+                        ),
+                      ),
+                      child: Text('서브메뉴', style: TextStyle(
                           color: Theme.of(context).textTheme.headline1.color,
                           fontSize: 12
                       )),

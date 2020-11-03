@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
 
 class Endpoint {
@@ -39,4 +42,12 @@ class Endpoint {
 
   /// customer service center
   static final String customerServiceCenterNumber = '01064784899';
+
+  /// web mobile size
+  static final double webWidth = 375;
+  static final double webHeight = 667;
+}
+
+bool kIsPcWeb({BuildContext context}) {
+  return kIsWeb && MediaQuery.of(context == null ? Get.context : context).size.width > 768 ;
 }

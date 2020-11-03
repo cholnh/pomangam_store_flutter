@@ -14,4 +14,7 @@ class DeliverySiteRepository {
   Future<List<DeliverySite>> search({String query}) async
     => DeliverySite.fromJsonList((await api.get(url: '/dsites/search?query=$query')).data);
 
+  Future<List<DeliverySite>> fetchByIdxStore({int sIdx}) async
+  => DeliverySite.fromJsonList((await api.get(url: '/dsites?sIdx=$sIdx')).data);
+
 }

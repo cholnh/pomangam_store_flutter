@@ -9,5 +9,5 @@ class DeliveryDetailSiteRepository {
     => DeliveryDetailSite.fromJsonList((await api.get(url: '/dsites/$dIdx/details')).data);
 
   Future<DeliveryDetailSite> findByIdx({int dIdx, int ddIdx}) async
-    => DeliveryDetailSite.fromJson((await api.get(url: '/dsites/$dIdx/details/$ddIdx')).data);
+    => DeliveryDetailSite.fromJson((await api.get(url: '/dsites/${dIdx == null ? '0' : dIdx}/details/$ddIdx')).data);
 }

@@ -8,6 +8,7 @@ class DeliverySiteModel with ChangeNotifier {
   DeliverySiteRepository _deliverySiteRepository = Get.find(tag: 'deliverySiteRepository');
 
   List<DeliverySite> deliverySites = List();
+  List<DeliverySite> userDeliverySites = List();
   DeliverySite userDeliverySite;
 
   bool isFetching = false;
@@ -56,6 +57,16 @@ class DeliverySiteModel with ChangeNotifier {
       print('[Debug] DeliverySiteModel.changeUserDeliverySite Error - $error');
     }
     changeUserDeliverySite(fetched);
+  }
+
+  Future<void> fetchByIdxStore({
+    @required int sIdx,
+  }) async {
+    try {
+      userDeliverySites = await _deliverySiteRepository.fetchByIdxStore(sIdx: sIdx);
+    } catch (error) {
+      print('[Debug] DeliverySiteModel.fetchByIdxStore Error - $error');
+    }
   }
 
   void changeUserDeliverySite(DeliverySite deliverySite) async {

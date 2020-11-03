@@ -26,6 +26,33 @@ class OrderRepository {
           .toString(),
       pageRequest: pageRequest
     )).data);
+
+  Future<OrderResponse> approve({
+    @required int sIdx,
+    @required int oIdx
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/approve')).data);
+
+  Future<OrderResponse> disapprove({
+    @required int sIdx,
+    @required int oIdx,
+    String reason
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/disapprove' + (reason != null ? '?reason=$reason' : ''))).data);
+
+  Future<OrderResponse> deliveryPickup({
+    @required int sIdx,
+    @required int oIdx
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/pickup')).data);
+
+  Future<OrderResponse> deliveryDelay({
+    @required int sIdx,
+    @required int oIdx,
+    String reason
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/delay' + (reason != null ? '?reason=$reason' : ''))).data);
+
+  Future<OrderResponse> deliverySuccess({
+    @required int sIdx,
+    @required int oIdx
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/success')).data);
 }
 
 class Url {

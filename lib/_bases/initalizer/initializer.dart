@@ -140,7 +140,6 @@ class Initializer {
   Future<bool> _initializeToken() async
   => logProcess(name: 'initializeToken', function: () async {
       if(_isServerDown) return false;
-
       Token token = await api.oauthTokenRepository.loadToken();
       if(token != null) {
         token
@@ -170,22 +169,20 @@ class Initializer {
       if(_isServerDown) return false;
 
       SharedPreferences pref = await SharedPreferences.getInstance();
-      int sIdx = pref.getInt(s.idxCurrentStore);
+      int sIdx = Get.context.read<SignInModel>()?.ownerInfo?.idxStore ?? pref.getInt(s.idxCurrentStore);
       int dIdx = pref.getInt(s.idxDeliverySite);
-      int ddIdx = pref.getInt(s.idxDeliveryDetailSite) ?? 1;
+      int ddIdx = pref.getInt(s.idxDeliveryDetailSite);
+
+      print(Get.context.read<SignInModel>()?.ownerInfo);
 
       if(sIdx == null) {
-        return false;
-      } else {
-        await orderTimeDataInitialize(sIdx: sIdx);
+        return true;
       }
 
-      if(dIdx != null) {
-        await deliverySiteDataInitialize(dIdx: dIdx);
-      }
-      if(ddIdx != null) {
-        await deliveryDetailSiteDataInitialize(dIdx: dIdx, ddIdx: ddIdx);
-      }
+      await orderTimeDataInitialize(dIdx: dIdx);
+      await deliverySiteDataInitialize(sIdx: sIdx, dIdx: dIdx);
+      await deliveryDetailSiteDataInitialize(ddIdx: ddIdx);
+
       return true;
   });
 

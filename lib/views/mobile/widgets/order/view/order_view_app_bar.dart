@@ -13,14 +13,15 @@ class OrderViewAppBar extends AppBar {
     centerTitle: false,
     automaticallyImplyLeading: true,
     title: Row(
+      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        GestureDetector(
-          onTap: _dsiteTap,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.only(left: 15, right: 30, top: 10, bottom: 10),
-              child: Row(
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onTap: _dsiteTap,
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
                 children: [
                   Column(
                     children: [
@@ -38,8 +39,6 @@ class OrderViewAppBar extends AppBar {
                       )
                     ],
                   ),
-                  // SizedBox(width: 3),
-                  // Icon(Icons.arrow_drop_down, color: Theme.of(Get.context).primaryColor),
                 ],
               ),
             ),
@@ -50,54 +49,46 @@ class OrderViewAppBar extends AppBar {
           width: 0.5,
           color: Colors.grey[400],
         ),
-        GestureDetector(
-          onTap: _showModal,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
-              child: Consumer<OrderTimeModel>(
-                builder: (_, model, child) {
-                  bool isToday = _isToday(model.userOrderDate); // model.userOrderDate?.isAfter(DateTime.now());
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onTap: _showModal,
+            child: Material(
+              color: Colors.transparent,
+              child: Center(
+                child: Consumer<OrderTimeModel>(
+                  builder: (_, model, child) {
+                    bool isToday = _isToday(model.userOrderDate); // model.userOrderDate?.isAfter(DateTime.now());
 
-                  var textArrivalDate = !isToday ? ' ${DateFormat('MM월 dd일').format(model.userOrderDate)}' : ' 오늘';
-                  var textArrivalTime = '';
+                    var textArrivalDate = !isToday ? ' ${DateFormat('MM월 dd일').format(model.userOrderDate)}' : ' 오늘';
+                    var textArrivalTime = '';
 
-                  if(model.userOrderTime.isNull) {
-                    textArrivalTime = '전체';
-                  } else {
-                    int h = model.userOrderTime.getArrivalDateTime().hour;
-                    int m = model.userOrderTime.getArrivalDateTime().minute;
-                    var textMinute = m == 0 ? '' : '$m분 ';
-                    textArrivalTime = '$h시 $textMinute' + (!isToday ? '예약' : '도착');
+                    if(model.userOrderTime.isNull) {
+                      textArrivalTime = '전체';
+                    } else {
+                      int h = model.userOrderTime.getArrivalDateTime().hour;
+                      int m = model.userOrderTime.getArrivalDateTime().minute;
+                      var textMinute = m == 0 ? '' : '$m분 ';
+                      textArrivalTime = '$h시 $textMinute' + (!isToday ? '예약' : '도착');
+                    }
+
+                    return Column(
+                      children: [
+                        Text('$textArrivalTime', style: const TextStyle(fontSize: 15.0, color: Colors.black)),
+                        Text('$textArrivalDate', style: const TextStyle(fontSize: 11.0, color: Colors.grey)),
+                      ],
+                    );
                   }
-
-                  return Row(
-                    children: <Widget>[
-                      Column(
-                        children: [
-                          Text('$textArrivalTime', style: const TextStyle(fontSize: 15.0, color: Colors.black)),
-                          Text('$textArrivalDate', style: const TextStyle(fontSize: 11.0, color: Colors.grey)),
-                        ],
-                      ),
-                      // SizedBox(width: 3),
-                      // Text('$textArrivalTime$textArrivalDate', style: const TextStyle(fontSize: 16.0, color: Colors.black)),
-                      // Icon(Icons.arrow_drop_down, color: Theme.of(Get.context).primaryColor)
-                    ],
-                  );
-                }
+                ),
               ),
             ),
           ),
         ),
-        Container(
-          height: 60.0,
-          width: 0.5,
-          color: Colors.grey[400],
-        ),
       ],
     ),
-    actions: [
+    actions: null,
+
+    //[
       // OrderViewSortPicker(
       //   child: Padding(
       //     padding: const EdgeInsets.all(15.0),
@@ -111,9 +102,9 @@ class OrderViewAppBar extends AppBar {
       //   ),
       //   onChanged: _fetch
       // ),
-      Icon(Icons.settings_outlined, size: 20, color: Theme.of(Get.context).textTheme.headline1.color),
-      SizedBox(width: 15)
-    ],
+      // Icon(Icons.settings_outlined, size: 20, color: Theme.of(Get.context).textTheme.headline1.color),
+      // SizedBox(width: 15)
+    //],
     elevation: 1.0,
   );
 }

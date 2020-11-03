@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pomangam/_bases/util/string_utils.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/order/order_type.dart';
 import 'package:pomangam/domains/payment/payment_type.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
+import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/content/order_view_content_done_widget.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/content/order_view_content_proceeding_widget.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/content/order_view_content_ready_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrderViewContentWidget extends StatelessWidget {
@@ -23,8 +25,10 @@ class OrderViewContentWidget extends StatelessWidget {
       case OrderType.ORDER_READY:
       case OrderType.ORDER_QUICK_READY:
         return OrderViewContentReadyWidget(
+          idx: order.idx,
           boxNumber: order.boxNumber,
-          isRequirement: _isRequirement(order),
+          hasRequirement: _hasRequirement(order),
+          hasSubItems: _hasSubItems(order),
           title: _title(order),
           subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
           subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -34,8 +38,10 @@ class OrderViewContentWidget extends StatelessWidget {
       case OrderType.DELIVERY_PICKUP:
       case OrderType.DELIVERY_DELAY:
         return OrderViewContentProceedingWidget(
+          idx: order.idx,
           boxNumber: order.boxNumber,
-          isRequirement: _isRequirement(order),
+          hasRequirement: _hasRequirement(order),
+          hasSubItems: _hasSubItems(order),
           title: _title(order),
           subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
           subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -45,8 +51,10 @@ class OrderViewContentWidget extends StatelessWidget {
 
       case OrderType.DELIVERY_SUCCESS:
         return OrderViewContentDoneWidget(
+            idx: order.idx,
             boxNumber: order.boxNumber,
-            isRequirement: _isRequirement(order),
+            hasRequirement: _hasRequirement(order),
+            hasSubItems: _hasSubItems(order),
             title: _title(order),
             subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
             subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -55,8 +63,10 @@ class OrderViewContentWidget extends StatelessWidget {
 
       case OrderType.MISS_BY_DELIVERER:
         return OrderViewContentDoneWidget(
+            idx: order.idx,
             boxNumber: order.boxNumber,
-            isRequirement: _isRequirement(order),
+            hasRequirement: _hasRequirement(order),
+            hasSubItems: _hasSubItems(order),
             title: _title(order),
             subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
             subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -64,8 +74,10 @@ class OrderViewContentWidget extends StatelessWidget {
         );
       case OrderType.MISS_BY_STORE:
         return OrderViewContentDoneWidget(
+            idx: order.idx,
             boxNumber: order.boxNumber,
-            isRequirement: _isRequirement(order),
+            hasRequirement: _hasRequirement(order),
+            hasSubItems: _hasSubItems(order),
             title: _title(order),
             subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
             subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -73,8 +85,10 @@ class OrderViewContentWidget extends StatelessWidget {
         );
       case OrderType.RE_DELIVERY:
         return OrderViewContentDoneWidget(
+            idx: order.idx,
             boxNumber: order.boxNumber,
-            isRequirement: _isRequirement(order),
+            hasRequirement: _hasRequirement(order),
+            hasSubItems: _hasSubItems(order),
             title: _title(order),
             subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
             subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
@@ -85,14 +99,26 @@ class OrderViewContentWidget extends StatelessWidget {
     }
   }
 
-  bool _isRequirement(OrderResponse order) {
+  bool _hasRequirement(OrderResponse order) {
+    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
     for(OrderItemResponse item in order.orderItems) {
-      if(item.requirement != null && item.requirement.isNotEmpty) {
+      if(sIdx == item.idxStore && item.requirement != null && item.requirement.isNotEmpty) {
         return true;
       }
     }
     return false;
   }
+
+  bool _hasSubItems(OrderResponse order) {
+    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
+    for(OrderItemResponse item in order.orderItems) {
+      if(sIdx == item.idxStore && item.orderItemSubs.isNotEmpty) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   String _title(OrderResponse order) {
     if(order.orderItems == null || order.orderItems.isEmpty) {
       return '오류';

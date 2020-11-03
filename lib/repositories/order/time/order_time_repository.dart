@@ -5,6 +5,9 @@ import 'package:pomangam/domains/order/time/order_time.dart';
 class OrderTimeRepository {
   final Api api = Get.find(tag: 'api');
 
-  Future<List<OrderTime>> findByIdxStore({int sIdx}) async
-    => OrderTime.fromJsonList((await api.get(url: '/store/$sIdx/ordertimes')).data);
+  Future<List<OrderTime>> findByIdxDeliverySite({
+    int sIdx,
+    int dIdx
+  }) async
+    => OrderTime.fromJsonList((await api.get(url: '/store/$sIdx/ordertimes?dIdx=$dIdx')).data);
 }

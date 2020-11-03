@@ -17,6 +17,8 @@ class OrderItemResponse extends EntityAuditing {
   List<OrderItemSubResponse> orderItemSubs = List();
   bool reviewWrite;
 
+  bool isSelected = false;
+
   OrderItemResponse({
     int idx, DateTime registerDate, DateTime modifyDate,
     this.idxStore, this.nameStore, this.idxProduct, this.nameProduct, this.saleCost,

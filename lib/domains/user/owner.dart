@@ -34,6 +34,6 @@ class Owner extends EntityAuditing {
 
   @override
   String toString() {
-    return 'Owner{phoneNumber: $phoneNumber, id: $id, password: $password, name: $name, sex: $sex, birth: $birth, idxFcmToken: $idxFcmToken}';
+    return 'Owner{phoneNumber: $phoneNumber, id: $id, password: $password, name: $name, sex: $sex, birth: $birth, idxFcmToken: $idxFcmToken, idxStore: $idxStore}';
   }
 }

@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animation_set/widget/transition_animations.dart';
@@ -9,9 +8,7 @@ import 'package:pomangam/_bases/i18n/i18n.dart';
 import 'package:pomangam/_bases/initalizer/initializer.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/views/mobile/pages/_bases/error_page.dart';
-import 'package:pomangam/views/web/pages/_bases/base_page.dart' as WebBasePage;
 import 'package:pomangam/views/mobile/pages/_bases/base_page.dart' as MobileBasePage;
-import 'package:pomangam/views/web/pages/sign/sign_in_page.dart' as WebSignInPage;
 import 'package:pomangam/views/mobile/pages/sign/sign_in_page.dart' as MobileSignInPage;
 import 'package:provider/provider.dart';
 
@@ -27,7 +24,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void initState() {
-    if(!Platform.isWindows) {
+    if(!kIsWeb) {
       _appVersion();
     }
     _readyInitialize(); // 초기화 준비
@@ -102,22 +99,12 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _onDone() {
-    double w = MediaQuery.of(context).size.width;
     Get.offAll(
       context.read<SignInModel>().isSignIn()
-        ? isMobile(w)
-          ? MobileBasePage.BasePage()
-          : WebBasePage.BasePage()
-        : isMobile(w)
-          ? MobileSignInPage.SignInPage()
-          : WebSignInPage.SignInPage(),
+        ? MobileBasePage.BasePage()
+        : MobileSignInPage.SignInPage(),
       transition: Transition.cupertino
     );
-  }
-
-  bool isMobile(double width) {
-    if(Platform.isWindows) return false;
-    return width <= 960;
   }
 
   void _onServerError()

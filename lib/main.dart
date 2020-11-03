@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_maps/flutter_google_maps.dart';
 import 'package:get/get.dart';
+import 'package:pomangam/_bases/constants/endpoint.dart';
 import 'package:pomangam/_bases/di/injector_register.dart';
 import 'package:pomangam/providers/deliverysite/delivery_site_model.dart';
 import 'package:pomangam/providers/deliverysite/detail/delivery_detail_site_model.dart';
@@ -18,7 +17,6 @@ import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/views/splash_page.dart';
 
 void main() {
-  GoogleMap.init('AIzaSyCfgL80z55BPeCaCQSfiyabWK_J8YJkd5s');
   WidgetsFlutterBinding.ensureInitialized();
   InjectorRegister.register();
 
@@ -37,25 +35,10 @@ void main() {
 
   runZonedGuarded(() {
     runApp(MyApp());
-//    runApp(_devicePreview(
-//      enabled: true,
-//      builder: (ctx) => MyApp()
-//    ));
   }, (Object error, StackTrace stackTrace) {
     print('zone error!! $error');
     print(stackTrace);
   });
-}
-
-Widget _devicePreview({bool enabled, WidgetBuilder builder}) {
-  return MaterialApp(
-      home: Scaffold(
-        body: DevicePreview(
-            enabled: enabled,
-            builder: builder
-        ),
-      )
-  );
 }
 
 class MyApp extends StatelessWidget {
@@ -73,7 +56,7 @@ class MyApp extends StatelessWidget {
 
       ],
       child: GetMaterialApp(
-        builder: DevicePreview.appBuilder, // <--- Add the builder
+        // builder: DevicePreview.appBuilder, // <--- Add the builder
         title: '레디밀 사장님',
         themeMode: ThemeMode.light,
         theme: customTheme(context),
@@ -87,8 +70,37 @@ class MyApp extends StatelessWidget {
         defaultTransition: Transition.cupertino,
         transitionDuration: Duration.zero,
 
+        builder: (context, child) => _webView(
+            context: context,
+            enabled: kIsPcWeb(context: context),
+            child: child
+        ),
+
         supportedLocales: [Locale('en')],
         debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+
+  Widget _webView({BuildContext context, bool enabled, Widget child}) {
+    if(!enabled) return child;
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(size: Size(Endpoint.webWidth, Endpoint.webHeight)),
+      child: Scaffold(
+          backgroundColor: Colors.grey[100],
+          body: Center(
+            child: Container(
+              width: Endpoint.webWidth,
+              height: Endpoint.webHeight,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Colors.grey[500],
+                      width: 0.5
+                  )
+              ),
+              child: child,
+            ),
+          )
       ),
     );
   }

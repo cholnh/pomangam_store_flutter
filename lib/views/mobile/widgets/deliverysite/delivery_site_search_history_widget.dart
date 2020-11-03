@@ -33,8 +33,8 @@ class _DeliverySiteSearchHistoryWidgetState extends State<DeliverySiteSearchHist
     return Consumer<DeliverySiteModel>(
       builder: (_, model, __) {
         if(model.isFetching || model.isSearching) return _loading();
-        if(model.deliverySites.isEmpty) return _empty();
-        return _items(model.deliverySites);
+        if(model.userDeliverySites.isEmpty) return _empty();
+        return _items(model.userDeliverySites);
       },
     );
   }

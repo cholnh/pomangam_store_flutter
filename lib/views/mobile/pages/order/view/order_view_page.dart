@@ -11,6 +11,7 @@ import 'package:pomangam/providers/deliverysite/detail/delivery_detail_site_mode
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
+import 'package:pomangam/views/mobile/pages/order/detail/order_detail_page.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_divider.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_refresher.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_shimmer.dart';
@@ -106,7 +107,10 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
                   children: [
                     for(OrderResponse order in model.orders) Column(
                       children: [
-                        OrderViewContentWidget(order: order),
+                        GestureDetector(
+                          onTap: () => Get.to(OrderDetailPage(order: order)),
+                          child: OrderViewContentWidget(order: order)
+                        ),
                         CustomDivider()
                       ],
                     )
@@ -160,7 +164,10 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
                   if(order.arrivalTime == times.elementAt(i))
                     Column(
                       children: [
-                        OrderViewContentWidget(order: order),
+                        GestureDetector(
+                          onTap: () => Get.to(OrderDetailPage(order: order)),
+                          child: OrderViewContentWidget(order: order)
+                        ),
                         CustomDivider()
                       ],
                     ),

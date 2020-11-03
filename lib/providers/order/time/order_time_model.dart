@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/domains/order/time/order_time.dart';
+import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/repositories/order/time/order_time_repository.dart';
+import 'package:provider/provider.dart';
 import 'package:time/time.dart';
 
 class OrderTimeModel with ChangeNotifier {
@@ -25,12 +27,15 @@ class OrderTimeModel with ChangeNotifier {
 
   Future<void> fetch({
     bool forceUpdate = false,
-    @required int sIdx
+    @required int dIdx
   }) async {
     if(!forceUpdate && orderTimes.length > 0) return;
 
     try {
-      orderTimes = await _orderTimeRepository.findByIdxStore(sIdx: sIdx);
+      orderTimes = await _orderTimeRepository.findByIdxDeliverySite(
+        sIdx: Get.context.read<SignInModel>().ownerInfo.idxStore,
+        dIdx: dIdx
+      );
     } catch (error) {
       print('[Debug] OrderTimeModel.fetch Error - $error');
     }

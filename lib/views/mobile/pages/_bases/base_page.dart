@@ -9,6 +9,7 @@ import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/views/mobile/pages/home/home_page.dart';
 import 'package:pomangam/views/mobile/pages/order/history/order_history_page.dart';
 import 'package:pomangam/views/mobile/pages/order/view/order_view_page.dart';
+import 'package:pomangam/views/mobile/widgets/order/view/order_view_type.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatefulWidget {
@@ -24,13 +25,14 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool onoff = context.watch<OrderModel>().onOff == OrderOnOff.ON;
 
     return WillPopScope(
       onWillPop: _onWillPop,
       child: PersistentTabView(
         controller: _tabController,
         screens: _buildScreens(),
-        items: _navBarsItems(),
+        items: _navBarsItems(onoff: onoff),
         confineInSafeArea: true,
         backgroundColor: Theme.of(context).backgroundColor,
         handleAndroidBackButtonPress: true,
@@ -102,7 +104,7 @@ class _BasePageState extends State<BasePage> {
     ];
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems({bool hasOrder = false}) {
+  List<PersistentBottomNavBarItem> _navBarsItems({bool hasOrder = false, bool onoff}) {
 
     final Color activeColor = Theme.of(Get.context).primaryColor;
     final Color inactiveColor = Theme.of(Get.context).iconTheme.color;
@@ -123,6 +125,7 @@ class _BasePageState extends State<BasePage> {
           position: BadgePosition.topEnd(top: 0, end: -5),
           child: Consumer<OrderModel>(
             builder: (_, model, __) {
+              if(model.onOff == OrderOnOff.OFF) return Icon(CupertinoIcons.pause_solid);
               if(model.isFetching || model.isNewFetching) return Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: CupertinoActivityIndicator(),
@@ -131,7 +134,7 @@ class _BasePageState extends State<BasePage> {
             },
           )
         ),
-        title: '주문 접수 중',
+        title: onoff ? '주문 접수 중' : '주문 일시정지',
         activeColor: activeColor,
         inactiveColor: inactiveColor,
       ),

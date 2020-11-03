@@ -43,8 +43,6 @@ dependencies:
 
   firebase_core: ^0.4.0
 
-  device_preview: ^0.4.7
-
   google_fonts: ^1.1.0
 
   auto_size_text: ^2.1.0
@@ -70,8 +68,6 @@ dependencies:
   flutter_slidable: ^0.5.7
 
   flutter_calendar_carousel: ^1.4.11
-
-  flutter_google_maps: 3.7.1 # web 용
 
   neat_periodic_task: ^1.0.1
 

@@ -11,6 +11,8 @@ class OrderItemSubResponse extends EntityAuditing {
   int saleCost;
   int quantity;
 
+  bool isSelected = false;
+
   OrderItemSubResponse({
     int idx, DateTime registerDate, DateTime modifyDate,
     this.nameProductSub, this.idxProductSub, this.saleCost, this.quantity

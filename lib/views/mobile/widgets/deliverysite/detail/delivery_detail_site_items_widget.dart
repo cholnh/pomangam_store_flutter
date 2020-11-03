@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:pomangam/_bases/initalizer/initializer.dart';
 import 'package:pomangam/_bases/util/toast_utils.dart';
 import 'package:pomangam/domains/deliverysite/delivery_site.dart';
 import 'package:pomangam/providers/deliverysite/delivery_site_model.dart';
@@ -135,21 +136,24 @@ class _DeliveryDetailSiteItemsWidgetState extends State<DeliveryDetailSiteItemsW
       deliverySiteModel.changeIsChanging(true);
 
       SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setInt(s.idxDeliverySite, widget.deliverySite?.idx);
-      pref.setInt(s.idxDeliveryDetailSite, detailSite?.idx);
+      await pref.setInt(s.idxDeliverySite, widget.deliverySite?.idx);
+      await pref.setInt(s.idxDeliveryDetailSite, detailSite?.idx);
 
       deliverySiteModel.changeUserDeliverySite(widget.deliverySite);
       detailSiteModel.changeUserDeliveryDetailSite(detailSite);
+
+      Initializer _initializer = Get.find<Initializer>(tag: 'initializer');
+      await _initializer.initializeModelData();
 
       OrderModel orderModel = context.read();
       OrderTimeModel orderTimeModel = context.read();
       orderModel.clear(notify: false);
       await orderModel.fetchAll(
-        dIdx: widget.deliverySite?.idx,
-        ddIdx: detailSite?.idx,
-        otIdx: orderTimeModel.userOrderTime?.idx,
-        oDate: orderTimeModel.userOrderDate,
-        isForceUpdate: true
+          dIdx: widget.deliverySite?.idx,
+          ddIdx: detailSite?.idx,
+          otIdx: orderTimeModel.userOrderTime?.idx,
+          oDate: orderTimeModel.userOrderDate,
+          isForceUpdate: true
       );
 
       Get.offAll(BasePage(), transition: Transition.cupertino);

@@ -44,6 +44,8 @@ class OrderResponse extends EntityAuditing {
 
   List<OrderItemResponse> orderItems = List();
 
+  bool isChanging = false;
+
   OrderResponse({
     int idx, DateTime registerDate, DateTime modifyDate,
     this.orderType, this.boxNumber, this.paymentType,
