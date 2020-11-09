@@ -9,12 +9,27 @@ import 'package:provider/provider.dart';
 class HomeAppBar extends AppBar {
   HomeAppBar({Color backgroundColor}) : super (
     centerTitle: true,
+    toolbarHeight: 60,
     automaticallyImplyLeading: true,
     leading: null,
-    title: Text('포만감 풍동점', style: TextStyle(
-      color: Colors.white,
-      fontSize: 16.0,
-    )),
+    title: Consumer<OrderModel>(
+      builder: (_, model, __) {
+        return Column(
+          children: [
+            Text('포만감 풍동점', style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 17.0,
+            )),
+            SizedBox(height: 3),
+            Text(model.onOff == OrderOnOff.ON ? '주문 접수 중' : '주문 일시정지', style: TextStyle(
+              color: Colors.white,
+              fontSize: 13.0,
+            )),
+          ],
+        );
+      }
+    ),
     backgroundColor: backgroundColor,
     actions: [
       Center(

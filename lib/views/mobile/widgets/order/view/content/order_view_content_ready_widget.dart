@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:pomangam/domains/order/cash_receipt_type.dart';
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
@@ -17,6 +18,8 @@ class OrderViewContentReadyWidget extends StatefulWidget {
   final String title;
   final String subtitle;
   final String subtitle2;
+  final String cashReceipt;
+  final CashReceiptType cashReceiptType;
 
   OrderViewContentReadyWidget({
     this.idx,
@@ -25,7 +28,9 @@ class OrderViewContentReadyWidget extends StatefulWidget {
     this.hasSubItems = false,
     this.title,
     this.subtitle,
-    this.subtitle2
+    this.subtitle2,
+    this.cashReceipt,
+    this.cashReceiptType,
   });
 
   @override
@@ -108,10 +113,28 @@ class _OrderViewContentReadyWidgetState extends State<OrderViewContentReadyWidge
                     color: Colors.black
                   )),
                   SizedBox(height: 5),
-                  Text('${widget.subtitle2}', style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black
-                  ))
+                  Row(
+                    children: [
+                      Text('${widget.subtitle2}', style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black
+                      )),
+                      if(!widget.cashReceipt.isNullOrBlank) SizedBox(width: 10),
+                      if(!widget.cashReceipt.isNullOrBlank) Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).textTheme.headline1.color,
+                              width: 0.5
+                          ),
+                        ),
+                        child: Text('현금영수증', style: TextStyle(
+                            color: Theme.of(context).textTheme.headline1.color,
+                            fontSize: 12
+                        )),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

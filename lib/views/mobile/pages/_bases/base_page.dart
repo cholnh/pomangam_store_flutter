@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:pomangam/_bases/util/toast_utils.dart';
+import 'package:pomangam/providers/order/order_history_model.dart';
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/views/mobile/pages/home/home_page.dart';
@@ -77,6 +78,15 @@ class _BasePageState extends State<BasePage> {
               break;
             case 2:
               context.read<OrderViewModel>().changeIsCurrent(false);
+              OrderHistoryModel orderHistoryModel = context.read();
+              orderHistoryModel.clear(notify: false);
+              await orderHistoryModel.fetchAll(
+                  dIdx: null,
+                  ddIdx: null,
+                  otIdx: null,
+                  oDate: null,
+                  isForceUpdate: true
+              );
               break;
           }
 

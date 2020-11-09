@@ -28,7 +28,7 @@ OrderItemResponse _$OrderItemResponseFromJson(Map<String, dynamic> json) {
             : OrderItemSubResponse.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     reviewWrite: json['reviewWrite'] as bool,
-  );
+  )..isSelected = json['isSelected'] as bool;
 }
 
 Map<String, dynamic> _$OrderItemResponseToJson(OrderItemResponse instance) =>
@@ -46,4 +46,5 @@ Map<String, dynamic> _$OrderItemResponseToJson(OrderItemResponse instance) =>
       'orderItemSubs':
           instance.orderItemSubs?.map((e) => e?.toJson())?.toList(),
       'reviewWrite': instance.reviewWrite,
+      'isSelected': instance.isSelected,
     };

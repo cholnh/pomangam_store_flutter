@@ -19,7 +19,7 @@ OrderItemSubResponse _$OrderItemSubResponseFromJson(Map<String, dynamic> json) {
     idxProductSub: json['idxProductSub'] as int,
     saleCost: json['saleCost'] as int,
     quantity: json['quantity'] as int,
-  );
+  )..isSelected = json['isSelected'] as bool;
 }
 
 Map<String, dynamic> _$OrderItemSubResponseToJson(
@@ -32,4 +32,5 @@ Map<String, dynamic> _$OrderItemSubResponseToJson(
       'idxProductSub': instance.idxProductSub,
       'saleCost': instance.saleCost,
       'quantity': instance.quantity,
+      'isSelected': instance.isSelected,
     };

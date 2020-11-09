@@ -2,18 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/_bases/util/string_utils.dart';
+import 'package:pomangam/domains/order/cash_receipt_type.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
 import 'package:pomangam/domains/order/item/sub/order_item_sub_response.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
+import 'package:pomangam/views/mobile/pages/order/detail/order_detail_page_type.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailMenuWidget extends StatelessWidget {
 
   final OrderResponse order;
+  final OrderDetailPageType pageType;
 
-  OrderDetailMenuWidget({this.order});
+  OrderDetailMenuWidget({this.order, this.pageType});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class OrderDetailMenuWidget extends StatelessWidget {
           _items(),
           _text(
               leftText: '주문금액',
-              rightText: '${StringUtils.comma(order.totalCost)}원',
+              rightText: '${StringUtils.comma(_storeTotalPrice())}원',
               color: Theme.of(Get.context).textTheme.subtitle2.color
           ),
           SizedBox(height: 15),
@@ -63,45 +66,22 @@ class OrderDetailMenuWidget extends StatelessWidget {
           SizedBox(height: 15),
           _text(
             leftText: '합계',
-            rightText: '${StringUtils.comma(order.paymentCost)}원',
+            rightText: '${StringUtils.comma(_storeTotalPrice() - order.discountCost)}원',
             color: Theme.of(Get.context).textTheme.subtitle2.color
           ),
           SizedBox(height: 15),
+          if(!order.cashReceipt.isNullOrBlank) Align(
+            alignment: Alignment.centerRight,
+            child: Text('${convertCashReceiptTypeToText(order.cashReceiptType)} ${order.cashReceipt}', style: TextStyle(
+              fontSize: 13,
+              color: Theme.of(Get.context).textTheme.subtitle2.color
+            ), textAlign: TextAlign.right),
+          ),
+          if(!order.cashReceipt.isNullOrBlank) SizedBox(height: 15),
         ],
       ),
     );
   }
-
-  // Widget _text({
-  //   String leftText = '',
-  //   String centerText = '',
-  //   String rightText = '',
-  //   Color color
-  // }) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Text(leftText, style: TextStyle(
-  //           fontSize: 15,
-  //           color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
-  //       )),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           Text(centerText, style: TextStyle(
-  //               fontSize: 15,
-  //               color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
-  //           )),
-  //           SizedBox(width: 40),
-  //           Text(rightText, style: TextStyle(
-  //               fontSize: 15,
-  //               color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
-  //           )),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _text({
     String leftText = '',
@@ -140,6 +120,7 @@ class OrderDetailMenuWidget extends StatelessWidget {
     List<Widget> widgets = [];
     int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
     List<OrderItemResponse> orderItems = order.orderItems.where((item) => item.idxStore == sIdx).toList();
+    bool fromView = pageType == OrderDetailPageType.FROM_VIEW;
 
     widgets.add(Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +133,9 @@ class OrderDetailMenuWidget extends StatelessWidget {
                 Consumer<OrderModel>(
                   builder: (_, model, __) {
                     return GestureDetector(
-                      onTap: () => model.orderItemToggle(item.idx),
+                      onTap: fromView
+                        ? () => model.orderItemToggle(item.idx)
+                        : () {},
                       child: Material(
                         color: Colors.transparent,
                         child: Row(
@@ -162,7 +145,7 @@ class OrderDetailMenuWidget extends StatelessWidget {
                               flex: 6,
                               child: Row(
                                 children: [
-                                  Container(
+                                  if(fromView) Container(
                                     width: 15,
                                     height: 15,
                                     decoration: BoxDecoration(
@@ -171,11 +154,11 @@ class OrderDetailMenuWidget extends StatelessWidget {
                                             width: 0.5
                                         )
                                     ),
-                                    child: item.isSelected
+                                    child: item.isSelected ?? false
                                         ? Icon(Icons.check, size: 15)
                                         : null,
                                   ),
-                                  SizedBox(width: 10),
+                                  if(fromView) SizedBox(width: 10),
                                   Expanded(
                                     child: Text(item.nameProduct, style: TextStyle(
                                       fontSize: 15,
@@ -230,6 +213,7 @@ class OrderDetailMenuWidget extends StatelessWidget {
     }
 
     bool hasRequirement = item.requirement != null && item.requirement.isNotEmpty;
+    bool fromView = pageType == OrderDetailPageType.FROM_VIEW;
 
     List<Widget> widgets = [];
     for(int i=0; i<item.orderItemSubs.length; i++) {
@@ -239,7 +223,9 @@ class OrderDetailMenuWidget extends StatelessWidget {
         child: Consumer<OrderModel>(
             builder: (_, model, __) {
               return GestureDetector(
-                onTap: () => model.orderSubItemToggle(sub.idx),
+                onTap: fromView
+                  ? () => model.orderSubItemToggle(sub.idx)
+                  : () {},
                 child: Material(
                   color: Colors.transparent,
                   child: Row(
@@ -249,7 +235,7 @@ class OrderDetailMenuWidget extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
+                            if(fromView) Container(
                               width: 15,
                               height: 15,
                               decoration: BoxDecoration(
@@ -258,11 +244,11 @@ class OrderDetailMenuWidget extends StatelessWidget {
                                       width: 0.5
                                   )
                               ),
-                              child: sub.isSelected
+                              child: sub.isSelected ?? false
                                   ? Icon(Icons.check, size: 15)
                                   : null,
                             ),
-                            SizedBox(width: 10),
+                            if(fromView) SizedBox(width: 10),
                             Expanded(
                               child: Text('${sub.nameProductSub}', style: TextStyle(
                                 fontSize: 15.0,
@@ -274,10 +260,13 @@ class OrderDetailMenuWidget extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Text('${sub.quantity}', style: TextStyle(
-                            fontSize: 15.0,
-                            color: Theme.of(Get.context).textTheme.headline1.color
-                        ), textAlign: TextAlign.end)
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: Text('${sub.quantity ~/ item.quantity}', style: TextStyle(
+                              fontSize: 15.0,
+                              color: Theme.of(Get.context).textTheme.headline1.color
+                          ), textAlign: TextAlign.end),
+                        )
                       ),
                       Expanded(
                         flex: 2,
@@ -341,5 +330,19 @@ class OrderDetailMenuWidget extends StatelessWidget {
           children: widgets
       ),
     );
+  }
+
+  int _storeTotalPrice() {
+    int total = 0;
+    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
+    for(OrderItemResponse item in order.orderItems) {
+      if(item.idxStore == sIdx) {
+        total += item.saleCost * item.quantity;
+        for(OrderItemSubResponse sub in item.orderItemSubs) {
+          total += sub.saleCost * item.quantity;
+        }
+      }
+    }
+    return total;
   }
 }

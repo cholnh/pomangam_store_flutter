@@ -32,6 +32,8 @@ OrderResponse _$OrderResponseFromJson(Map<String, dynamic> json) {
         ?.toList(),
     savedPoint: json['savedPoint'] as int,
     cashReceipt: json['cashReceipt'] as String,
+    cashReceiptType:
+        _$enumDecodeNullable(_$CashReceiptTypeEnumMap, json['cashReceiptType']),
     totalCost: json['totalCost'] as int,
     discountCost: json['discountCost'] as int,
     paymentCost: json['paymentCost'] as int,
@@ -50,7 +52,7 @@ OrderResponse _$OrderResponseFromJson(Map<String, dynamic> json) {
             ? null
             : OrderItemResponse.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-  );
+  )..isChanging = json['isChanging'] as bool;
 }
 
 Map<String, dynamic> _$OrderResponseToJson(OrderResponse instance) =>
@@ -68,6 +70,7 @@ Map<String, dynamic> _$OrderResponseToJson(OrderResponse instance) =>
           instance.usingPromotions?.map((e) => e?.toJson())?.toList(),
       'savedPoint': instance.savedPoint,
       'cashReceipt': instance.cashReceipt,
+      'cashReceiptType': _$CashReceiptTypeEnumMap[instance.cashReceiptType],
       'totalCost': instance.totalCost,
       'discountCost': instance.discountCost,
       'paymentCost': instance.paymentCost,
@@ -80,6 +83,7 @@ Map<String, dynamic> _$OrderResponseToJson(OrderResponse instance) =>
       'arrivalTime': instance.arrivalTime,
       'additionalTime': instance.additionalTime,
       'orderItems': instance.orderItems?.map((e) => e?.toJson())?.toList(),
+      'isChanging': instance.isChanging,
     };
 
 T _$enumDecode<T>(
@@ -149,4 +153,11 @@ const _$PaymentTypeEnumMap = {
 const _$OrdererTypeEnumMap = {
   OrdererType.GUEST: 'GUEST',
   OrdererType.USER: 'USER',
+};
+
+const _$CashReceiptTypeEnumMap = {
+  CashReceiptType.PERSONAL_PHONE_NUMBER: 'PERSONAL_PHONE_NUMBER',
+  CashReceiptType.PERSONAL_CARD_NUMBER: 'PERSONAL_CARD_NUMBER',
+  CashReceiptType.BUSINESS_REGISTRATION_NUMBER: 'BUSINESS_REGISTRATION_NUMBER',
+  CashReceiptType.BUSINESS_CARD_NUMBER: 'BUSINESS_CARD_NUMBER',
 };

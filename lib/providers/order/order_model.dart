@@ -24,6 +24,7 @@ class OrderModel with ChangeNotifier {
 
   /// model
   List<OrderResponse> orders = List();
+  OrderResponse detail;
 
   /// data
   bool isFetching = false;
@@ -40,10 +41,10 @@ class OrderModel with ChangeNotifier {
     int dIdx,
     int ddIdx,
     int otIdx,
-    @required DateTime oDate,
+    DateTime oDate,
     bool isForceUpdate = false
   }) async {
-    //print('orders fetchAll! (sIdx: ${Get.context.read<SignInModel>().ownerInfo.idxStore}, dIdx: $dIdx, ddIdx: $ddIdx, otIdx: $otIdx, oDate: $oDate, last: $last)');
+    print('orders fetchAll! (sIdx: ${Get.context.read<SignInModel>().ownerInfo.idxStore}, dIdx: $dIdx, ddIdx: $ddIdx, otIdx: $otIdx, oDate: $oDate, last: $last)');
     if(!isForceUpdate && !hasNext) return;
     hasNext = false; // lock
     isFetching = true;
@@ -60,12 +61,13 @@ class OrderModel with ChangeNotifier {
     }
 
     try {
+      int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
       fetched = await _orderRepository.findByIdxStore(
-        sIdx: Get.context.read<SignInModel>().ownerInfo.idxStore,
+        sIdx: sIdx,
         dIdx: dIdx,
         ddIdx: ddIdx,
         otIdx: otIdx,
-        oDate: DateFormat('yyyy-MM-dd').format(oDate),
+        oDate: oDate == null ? null : DateFormat('yyyy-MM-dd').format(oDate),
         pageRequest: PageRequest(
           page: curPage++,
           size: size
@@ -212,6 +214,7 @@ class OrderModel with ChangeNotifier {
   Future<void> deliveryDelay({
     @required int sIdx,
     @required int oIdx,
+    @required int min,
     String reason
   }) async {
     if(isOrderChanging(oIdx)) return;
@@ -223,6 +226,7 @@ class OrderModel with ChangeNotifier {
       OrderResponse order = await _orderRepository.deliveryDelay(
         sIdx: sIdx,
         oIdx: oIdx,
+        min: min,
         reason: reason
       );
       _changeOrder(order);
@@ -249,6 +253,7 @@ class OrderModel with ChangeNotifier {
         oIdx: oIdx,
       );
       _changeOrder(order);
+
     } catch(error) {
       debug('OrderModel.deliverySuccess Error', error: error);
     } finally {
@@ -261,6 +266,7 @@ class OrderModel with ChangeNotifier {
     int index = this.orders.indexWhere((order) => order.idx == changed.idx);
     if(_isValidType(changed.orderType)) {
       this.orders.replaceRange(index, index+1, List()..add(changed));
+      this.detail = changed;
     } else {
       this.orders.removeAt(index);
     }
@@ -291,6 +297,7 @@ class OrderModel with ChangeNotifier {
     last = null;
     isOnOffChanging = false;
     orders.clear();
+    detail = null;
     clearOrderChanging();
     if(notify) {
       notifyListeners();
@@ -330,7 +337,9 @@ class OrderModel with ChangeNotifier {
     for(OrderResponse order in this.orders) {
       for(OrderItemResponse item in order.orderItems) {
         if(item.idx == oIdx) {
-          item.isSelected = !item.isSelected;
+          print('${item.isSelected}');
+          item.isSelected = item.isSelected == null ? true : !item.isSelected;
+          print('${item.isSelected}');
           notifyListeners();
           return;
         }
@@ -343,7 +352,7 @@ class OrderModel with ChangeNotifier {
       for(OrderItemResponse item in order.orderItems) {
         for(OrderItemSubResponse sub in item.orderItemSubs) {
           if(sub.idx == osIdx) {
-            sub.isSelected = !sub.isSelected;
+            sub.isSelected = sub.isSelected == null ? true : !sub.isSelected;
             notifyListeners();
             return;
           }
@@ -364,7 +373,7 @@ class OrderModel with ChangeNotifier {
   bool isOrderChanging(int oIdx) {
     for(OrderResponse order in this.orders) {
       if(order.idx == oIdx) {
-        return order.isChanging;
+        return order.isChanging ?? false;
       }
     }
     return false;

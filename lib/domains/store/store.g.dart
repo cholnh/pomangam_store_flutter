@@ -44,8 +44,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) {
             e == null ? null : StoreStory.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     isLike: json['isLike'] as bool,
-  )
-    ..storeCategory = json['storeCategory'] as String;
+  )..storeCategory = json['storeCategory'] as String;
 }
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{

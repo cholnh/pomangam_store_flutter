@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pomangam/domains/order/cash_receipt_type.dart';
 
 class OrderViewContentDoneWidget extends StatelessWidget {
 
@@ -10,6 +11,8 @@ class OrderViewContentDoneWidget extends StatelessWidget {
   final String subtitle;
   final String subtitle2;
   final String status;
+  final String cashReceipt;
+  final CashReceiptType cashReceiptType;
 
   OrderViewContentDoneWidget({
     this.idx,
@@ -19,7 +22,9 @@ class OrderViewContentDoneWidget extends StatelessWidget {
     this.title,
     this.subtitle,
     this.subtitle2,
-    this.status = '완료'
+    this.status = '완료',
+    this.cashReceipt,
+    this.cashReceiptType,
   });
 
   @override
@@ -84,10 +89,28 @@ class OrderViewContentDoneWidget extends StatelessWidget {
                     color: Colors.black
                 )),
                 SizedBox(height: 5),
-                Text('$subtitle2', style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black
-                ))
+                Row(
+                  children: [
+                    Text('$subtitle2', style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black
+                    )),
+                    if(cashReceipt != null && cashReceipt.isNotEmpty) SizedBox(width: 10),
+                    if(cashReceipt != null && cashReceipt.isNotEmpty) Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).textTheme.headline1.color,
+                            width: 0.5
+                        ),
+                      ),
+                      child: Text('현금영수증', style: TextStyle(
+                          color: Theme.of(context).textTheme.headline1.color,
+                          fontSize: 12
+                      )),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

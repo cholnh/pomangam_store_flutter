@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pomangam/domains/_bases/entity_auditing.dart';
 import 'package:pomangam/domains/coupon/coupon.dart';
+import 'package:pomangam/domains/order/cash_receipt_type.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
 import 'package:pomangam/domains/order/order_type.dart';
 import 'package:pomangam/domains/order/orderer/orderer_type.dart';
@@ -24,6 +25,7 @@ class OrderResponse extends EntityAuditing {
   List<Promotion> usingPromotions = List();
   int savedPoint;
   String cashReceipt;
+  CashReceiptType cashReceiptType;
   int totalCost;
   int discountCost;
   int paymentCost;
@@ -50,7 +52,7 @@ class OrderResponse extends EntityAuditing {
     int idx, DateTime registerDate, DateTime modifyDate,
     this.orderType, this.boxNumber, this.paymentType,
     this.ordererType, this.usingPoint, this.usingCoupons,
-    this.usingPromotions, this.savedPoint, this.cashReceipt, this.totalCost,
+    this.usingPromotions, this.savedPoint, this.cashReceipt, this.cashReceiptType, this.totalCost,
     this.discountCost, this.paymentCost, this.idxDeliverySite,
     this.idxDeliveryDetailSite, this.nameDeliverySite,
     this.nameDeliveryDetailSite, this.orderDate, this.idxOrderTime,

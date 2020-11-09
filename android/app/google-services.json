@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:418041228685:android:c2e4689101311ae5a561c4",
+        "android_client_info": {
+          "package_name": "com.mrporter.flutter.client.pomangam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhQA3t9-4rlxt2uKrBknpo7It3Rn0aBfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "418041228685-0gf77lbv5e02l54npp1fqo7v6qfgetvh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mrporter.pomangam.flutterAppTestFcmIos"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:418041228685:android:f06653a43fea35dda561c4",
         "android_client_info": {
           "package_name": "com.mrporter.flutter.store.pomangam"
@@ -58,6 +94,78 @@
             "certificate_hash": "1b4ffc451b764ece21944121a155c0c836bff381"
           }
         },
+        {
+          "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhQA3t9-4rlxt2uKrBknpo7It3Rn0aBfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "418041228685-0gf77lbv5e02l54npp1fqo7v6qfgetvh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mrporter.pomangam.flutterAppTestFcmIos"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418041228685:android:2fed2e4cd801a0c0a561c4",
+        "android_client_info": {
+          "package_name": "com.mrporter.web.admin.pomangam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhQA3t9-4rlxt2uKrBknpo7It3Rn0aBfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "418041228685-0gf77lbv5e02l54npp1fqo7v6qfgetvh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mrporter.pomangam.flutterAppTestFcmIos"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418041228685:android:a37ef34d9e5dd605a561c4",
+        "android_client_info": {
+          "package_name": "com.mrporter.web.client.pomangam"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "418041228685-m1el159nbht38jelbfambac0q6b9ebcg.apps.googleusercontent.com",
           "client_type": 3

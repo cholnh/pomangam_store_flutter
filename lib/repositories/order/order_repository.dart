@@ -12,7 +12,7 @@ class OrderRepository {
     int dIdx,
     int ddIdx,
     int otIdx,
-    @required String oDate,
+    String oDate,
     int last,
     PageRequest pageRequest
   }) async
@@ -46,8 +46,9 @@ class OrderRepository {
   Future<OrderResponse> deliveryDelay({
     @required int sIdx,
     @required int oIdx,
+    @required int min,
     String reason
-  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/delay' + (reason != null ? '?reason=$reason' : ''))).data);
+  }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/delay?min=$min' + (reason != null ? '&reason=$reason' : ''))).data);
 
   Future<OrderResponse> deliverySuccess({
     @required int sIdx,

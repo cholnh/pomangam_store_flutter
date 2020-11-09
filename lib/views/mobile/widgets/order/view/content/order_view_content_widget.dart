@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pomangam/_bases/util/string_utils.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
+import 'package:pomangam/domains/order/item/sub/order_item_sub_response.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/order/order_type.dart';
 import 'package:pomangam/domains/payment/payment_type.dart';
@@ -21,17 +22,22 @@ class OrderViewContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
+    List<OrderItemResponse> storeItems = order.orderItems.where((item) => item.idxStore == sIdx).toList();
+
     switch(order.orderType) {
       case OrderType.ORDER_READY:
       case OrderType.ORDER_QUICK_READY:
         return OrderViewContentReadyWidget(
           idx: order.idx,
           boxNumber: order.boxNumber,
-          hasRequirement: _hasRequirement(order),
-          hasSubItems: _hasSubItems(order),
-          title: _title(order),
-          subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-          subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
+          hasRequirement: _hasRequirement(storeItems),
+          hasSubItems: _hasSubItems(storeItems),
+          title: _title(storeItems),
+          subtitle: _subtitle(),
+          subtitle2: _subtitle2(),
+          cashReceipt: order.cashReceipt,
+          cashReceiptType: order.cashReceiptType,
         );
 
       case OrderType.DELIVERY_READY:
@@ -40,98 +46,104 @@ class OrderViewContentWidget extends StatelessWidget {
         return OrderViewContentProceedingWidget(
           idx: order.idx,
           boxNumber: order.boxNumber,
-          hasRequirement: _hasRequirement(order),
-          hasSubItems: _hasSubItems(order),
-          title: _title(order),
-          subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-          subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
+          hasRequirement: _hasRequirement(storeItems),
+          hasSubItems: _hasSubItems(storeItems),
+          title: _title(storeItems),
+          subtitle: _subtitle(),
+          subtitle2: _subtitle2(),
           orderDate: order.orderDate,
           pickUpTime: context.watch<OrderTimeModel>().getPickUpTime(order.idxOrderTime),
+          cashReceipt: order.cashReceipt,
+          cashReceiptType: order.cashReceiptType,
         );
 
       case OrderType.DELIVERY_SUCCESS:
         return OrderViewContentDoneWidget(
             idx: order.idx,
             boxNumber: order.boxNumber,
-            hasRequirement: _hasRequirement(order),
-            hasSubItems: _hasSubItems(order),
-            title: _title(order),
-            subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-            subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
-            status: '기사누락'
+            hasRequirement: _hasRequirement(storeItems),
+            hasSubItems: _hasSubItems(storeItems),
+            title: _title(storeItems),
+            subtitle: _subtitle(),
+            subtitle2: _subtitle2(),
+            cashReceipt: order.cashReceipt,
+            cashReceiptType: order.cashReceiptType,
         );
 
       case OrderType.MISS_BY_DELIVERER:
         return OrderViewContentDoneWidget(
             idx: order.idx,
             boxNumber: order.boxNumber,
-            hasRequirement: _hasRequirement(order),
-            hasSubItems: _hasSubItems(order),
-            title: _title(order),
-            subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-            subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
-            status: '기사누락'
+            hasRequirement: _hasRequirement(storeItems),
+            hasSubItems: _hasSubItems(storeItems),
+            title: _title(storeItems),
+            subtitle: _subtitle(),
+            subtitle2: _subtitle2(),
+            status: '기사누락',
+            cashReceipt: order.cashReceipt,
+            cashReceiptType: order.cashReceiptType,
         );
       case OrderType.MISS_BY_STORE:
         return OrderViewContentDoneWidget(
             idx: order.idx,
             boxNumber: order.boxNumber,
-            hasRequirement: _hasRequirement(order),
-            hasSubItems: _hasSubItems(order),
-            title: _title(order),
-            subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-            subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
-            status: '업체누락'
+            hasRequirement: _hasRequirement(storeItems),
+            hasSubItems: _hasSubItems(storeItems),
+            title: _title(storeItems),
+            subtitle: _subtitle(),
+            subtitle2: _subtitle2(),
+            status: '업체누락',
+            cashReceipt: order.cashReceipt,
+            cashReceiptType: order.cashReceiptType,
         );
       case OrderType.RE_DELIVERY:
         return OrderViewContentDoneWidget(
             idx: order.idx,
             boxNumber: order.boxNumber,
-            hasRequirement: _hasRequirement(order),
-            hasSubItems: _hasSubItems(order),
-            title: _title(order),
-            subtitle: '${_textDate(order.orderDate)} ${_textTime(order)} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}',
-            subtitle2: '${_payment(order.paymentType)} ${StringUtils.comma(order.paymentCost)}원',
-            status: '재배달'
+            hasRequirement: _hasRequirement(storeItems),
+            hasSubItems: _hasSubItems(storeItems),
+            title: _title(storeItems),
+            subtitle: _subtitle(),
+            subtitle2: _subtitle2(),
+            status: '재배달',
+            cashReceipt: order.cashReceipt,
+            cashReceiptType: order.cashReceiptType,
         );
 
       default: return Container();
     }
   }
 
-  bool _hasRequirement(OrderResponse order) {
-    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
-    for(OrderItemResponse item in order.orderItems) {
-      if(sIdx == item.idxStore && item.requirement != null && item.requirement.isNotEmpty) {
+  bool _hasRequirement(List<OrderItemResponse> storeItems) {
+    for(OrderItemResponse item in storeItems) {
+      if(item.requirement != null && item.requirement.isNotEmpty) {
         return true;
       }
     }
     return false;
   }
 
-  bool _hasSubItems(OrderResponse order) {
-    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
-    for(OrderItemResponse item in order.orderItems) {
-      if(sIdx == item.idxStore && item.orderItemSubs.isNotEmpty) {
+  bool _hasSubItems(List<OrderItemResponse> storeItems) {
+    for(OrderItemResponse item in storeItems) {
+      if(item.orderItemSubs.isNotEmpty) {
         return true;
       }
     }
     return false;
   }
 
-  String _title(OrderResponse order) {
-    if(order.orderItems == null || order.orderItems.isEmpty) {
-      return '오류';
-    }
-    if(order.orderItems.length == 1) {
-      return '${order.orderItems.first.nameProduct}';
+  String _title(List<OrderItemResponse> storeItems) {
+    if(storeItems == null || storeItems.isEmpty) return '오류';
+
+    if(storeItems.length == 1) {
+      return '${storeItems.first.nameProduct}' + (storeItems.first.quantity == 1 ? '' : ' ${storeItems.first.quantity}개');
     } else {
-      return '${order.orderItems.first.nameProduct} 외 ${order.orderItems.length - 1}개';
+      return '${storeItems.first.nameProduct} 외 ${storeItems.length - 1}개';
     }
   }
 
-  String _payment(PaymentType paymentType) {
-    switch(paymentType) {
+  String _payment() {
+    switch(order.paymentType) {
       case PaymentType.CONTACT_CREDIT_CARD:
       case PaymentType.CONTACT_CASH:
         return '후불결제';
@@ -144,8 +156,9 @@ class OrderViewContentWidget extends StatelessWidget {
     return '';
   }
 
-  String _textDate(DateTime dt) {
+  String _textDate() {
     String result = '';
+    DateTime dt = order.orderDate;
     if(isSameDay(dt, DateTime.now())) {
       return '오늘';
     } else if(isSameDay(dt, DateTime.now().add(Duration(days: 1)))) {
@@ -167,7 +180,7 @@ class OrderViewContentWidget extends StatelessWidget {
     return result + DateFormat('MM/dd$weekday').format(dt);
   }
 
-  String _textTime(OrderResponse order) {
+  String _textTime() {
     int h = int.tryParse(order.arrivalTime.split(':')[0]);
     int m = int.tryParse(order.arrivalTime.split(':')[1]);
     m += int.tryParse(order.additionalTime.split(':')[1]);
@@ -182,5 +195,27 @@ class OrderViewContentWidget extends StatelessWidget {
     return day1.year == day2.year &&
         day1.month == day2.month &&
         day1.day == day2.day;
+  }
+
+  String _subtitle() {
+    return '${_textDate()} ${_textTime()} ${order.nameDeliverySite} ${order.nameDeliveryDetailSite}';
+  }
+
+  String _subtitle2() {
+    return '${_payment()} ${StringUtils.comma(_storeTotalPrice())}원';
+  }
+
+  int _storeTotalPrice() {
+    int total = 0;
+    int sIdx = Get.context.read<SignInModel>().ownerInfo.idxStore;
+    for(OrderItemResponse item in order.orderItems) {
+      if(item.idxStore == sIdx) {
+        total += item.saleCost * item.quantity;
+        for(OrderItemSubResponse sub in item.orderItemSubs) {
+          total += sub.saleCost * item.quantity;
+        }
+      }
+    }
+    return total;
   }
 }

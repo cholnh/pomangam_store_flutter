@@ -7,6 +7,7 @@ import 'package:pomangam/_bases/constants/endpoint.dart';
 import 'package:pomangam/_bases/di/injector_register.dart';
 import 'package:pomangam/providers/deliverysite/delivery_site_model.dart';
 import 'package:pomangam/providers/deliverysite/detail/delivery_detail_site_model.dart';
+import 'package:pomangam/providers/order/order_history_model.dart';
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/providers/order/order_view_sort_model.dart';
@@ -53,10 +54,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => DeliverySiteModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => DeliveryDetailSiteModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => OrderHistoryModel(), lazy: true),
 
       ],
       child: GetMaterialApp(
-        // builder: DevicePreview.appBuilder, // <--- Add the builder
         title: '레디밀 사장님',
         themeMode: ThemeMode.light,
         theme: customTheme(context),
