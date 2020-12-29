@@ -7,6 +7,7 @@ import 'package:pomangam/_bases/util/toast_utils.dart';
 import 'package:pomangam/providers/order/order_history_model.dart';
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
+import 'package:pomangam/providers/store/store_model.dart';
 import 'package:pomangam/views/mobile/pages/home/home_page.dart';
 import 'package:pomangam/views/mobile/pages/order/history/order_history_page.dart';
 import 'package:pomangam/views/mobile/pages/order/view/order_view_page.dart';
@@ -26,7 +27,7 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool onoff = context.watch<OrderModel>().onOff == OrderOnOff.ON;
+    bool onoff = context.watch<StoreModel>().onOff == OrderOnOff.ON;
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -133,14 +134,18 @@ class _BasePageState extends State<BasePage> {
           padding: const EdgeInsets.all(2),
           elevation: 0.0,
           position: BadgePosition.topEnd(top: 0, end: -5),
-          child: Consumer<OrderModel>(
-            builder: (_, model, __) {
-              if(model.onOff == OrderOnOff.OFF) return Icon(CupertinoIcons.pause_solid);
-              if(model.isFetching || model.isNewFetching) return Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: CupertinoActivityIndicator(),
+          child: Consumer<StoreModel>(
+            builder: (_, storeModel, __) {
+              return Consumer<OrderModel>(
+                builder: (_, orderModel, __) {
+                  if(storeModel.onOff == OrderOnOff.OFF) return Icon(CupertinoIcons.pause_solid);
+                  if(orderModel.isFetching || orderModel.isNewFetching) return Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: CupertinoActivityIndicator(),
+                  );
+                  else return Icon(CupertinoIcons.play_arrow_solid);
+                },
               );
-              else return Icon(CupertinoIcons.play_arrow_solid);
             },
           )
         ),

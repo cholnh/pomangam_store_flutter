@@ -1,0 +1,3 @@
+enum VBankStatus {
+  READY, SUCCESS, FAIL_SAME_NAME, FAIL_UNKNOWN_NAME,
+}

@@ -6,10 +6,10 @@ class Messages {
 
 
   // Common
-  static String get appName => Intl.message('레디밀',
+  static String get appName => Intl.message('포만감',
       name: 'appName'
   );
-  static String get companyName => Intl.message('레디밀',
+  static String get companyName => Intl.message('포만감',
       name: 'companyName'
   );
   static String get tabHomeTitle => Intl.message('홈',

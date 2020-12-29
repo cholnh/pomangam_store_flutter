@@ -10,6 +10,7 @@ import 'package:pomangam/repositories/order/order_repository.dart';
 import 'package:pomangam/repositories/order/time/order_time_repository.dart';
 import 'package:pomangam/repositories/sign/sign_repository.dart';
 import 'package:pomangam/repositories/store/store_repository.dart';
+import 'package:pomangam/repositories/vbank/vbank_repository.dart';
 
 class InjectorRegister {
 
@@ -26,6 +27,7 @@ class InjectorRegister {
         ..put(DeliverySiteRepository(), tag: 'deliverySiteRepository')
         ..put(DeliveryDetailSiteRepository(), tag: 'deliveryDetailSiteRepository')
         ..put(StoreRepository(), tag: 'storeRepository')
+        ..put(VBankRepository(), tag: 'vbankRepository')
 
       ;
       logWithDots('register', 'InjectorRegister.register', 'success');

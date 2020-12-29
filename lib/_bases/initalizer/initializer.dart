@@ -11,6 +11,7 @@ import 'package:pomangam/_bases/constants/initial_value.dart';
 import 'package:pomangam/_bases/initalizer/data/delivery_detail_site_data_initializer.dart';
 import 'package:pomangam/_bases/initalizer/data/delivery_site_data_initializer.dart';
 import 'package:pomangam/_bases/initalizer/data/order_time_data_initializer.dart';
+import 'package:pomangam/_bases/initalizer/data/store_data_initializer.dart';
 import 'package:pomangam/_bases/key/shared_preference_key.dart' as s;
 import 'package:pomangam/_bases/network/api/api.dart';
 import 'package:pomangam/_bases/network/domain/server_health.dart';
@@ -173,15 +174,14 @@ class Initializer {
       int dIdx = pref.getInt(s.idxDeliverySite);
       int ddIdx = pref.getInt(s.idxDeliveryDetailSite);
 
-      print(Get.context.read<SignInModel>()?.ownerInfo);
-
       if(sIdx == null) {
         return true;
       }
 
-      await orderTimeDataInitialize(dIdx: dIdx);
       await deliverySiteDataInitialize(sIdx: sIdx, dIdx: dIdx);
       await deliveryDetailSiteDataInitialize(ddIdx: ddIdx);
+      await orderTimeDataInitialize();
+      await storeDataInitialize(sIdx: sIdx);
 
       return true;
   });

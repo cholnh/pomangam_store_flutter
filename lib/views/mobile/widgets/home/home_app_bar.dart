@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pomangam/providers/order/order_model.dart';
+import 'package:pomangam/providers/store/store_model.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_switch.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/order_view_type.dart';
@@ -12,7 +12,7 @@ class HomeAppBar extends AppBar {
     toolbarHeight: 60,
     automaticallyImplyLeading: true,
     leading: null,
-    title: Consumer<OrderModel>(
+    title: Consumer<StoreModel>(
       builder: (_, model, __) {
         return Column(
           children: [
@@ -33,7 +33,7 @@ class HomeAppBar extends AppBar {
     backgroundColor: backgroundColor,
     actions: [
       Center(
-        child: Consumer<OrderModel>(
+        child: Consumer<StoreModel>(
           builder: (_, model, __) {
             return GestureDetector(
               onTap: () {

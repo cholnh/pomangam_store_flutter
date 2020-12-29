@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pomangam/providers/order/order_model.dart';
+import 'package:pomangam/providers/store/store_model.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_divider.dart';
 import 'package:pomangam/views/mobile/widgets/home/category/home_category_widget.dart';
 import 'package:pomangam/views/mobile/widgets/home/home_app_bar.dart';
@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: HomeAppBar(
-        backgroundColor: context.watch<OrderModel>().onOff == OrderOnOff.ON
+        backgroundColor: context.watch<StoreModel>().onOff == OrderOnOff.ON
           ? Theme.of(context).primaryColor
           : Colors.grey[400],
       ),

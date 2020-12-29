@@ -1,27 +1,11 @@
-import 'dart:io';
-
-import 'package:device_info/device_info.dart';
-import 'package:flutter/services.dart';
+import 'dart:math';
 
 Future<String> getDeviceDetailsTempToken() async {
-  String deviceName;
-  String deviceVersion;
-  String identifier;
-  final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
-  try {
-    if (Platform.isAndroid) {
-      var build = await deviceInfoPlugin.androidInfo;
-      deviceName = build.model;
-      deviceVersion = build.version.toString();
-      identifier = build.androidId;  //UUID for Android
-    } else if (Platform.isIOS) {
-      var data = await deviceInfoPlugin.iosInfo;
-      deviceName = data.name;
-      deviceVersion = data.systemVersion;
-      identifier = data.identifierForVendor;  //UUID for iOS
-    }
-  } on PlatformException {
-    return 'TEMP-${deviceInfoPlugin.hashCode}';
-  }
-  return 'TEMP-$deviceName-$deviceVersion-$identifier';
+  return 'TEMP-${getRandomString(5)}';
 }
+
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

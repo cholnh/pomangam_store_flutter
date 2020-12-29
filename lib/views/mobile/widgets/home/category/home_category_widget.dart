@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pomangam/views/mobile/pages/home/deposit/deposit_page.dart';
 
 class HomeCategoryWidget extends StatelessWidget {
   @override
@@ -8,6 +10,8 @@ class HomeCategoryWidget extends StatelessWidget {
       color: Colors.white,
       child: Column(
         children: [
+          _menu(title: '입금 관리', icon: Icon(Icons.article_outlined, size: 20, color: Colors.black), onTap: () => Get.to(DepositPage())),
+          _divider(),
           _menu(title: '매장 관리', icon: Icon(Icons.storefront_outlined, size: 20, color: Colors.black)),
           _divider(),
           _menu(title: '메뉴 관리', icon: Icon(Icons.fastfood_outlined, size: 20, color: Colors.black)),

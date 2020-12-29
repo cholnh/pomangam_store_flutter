@@ -1,26 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pomangam/_bases/util/log_utils.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
 import 'package:pomangam/domains/order/item/sub/order_item_sub_response.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/order/order_type.dart';
-import 'package:pomangam/domains/store/schedule/store_schedule.dart';
-import 'package:pomangam/domains/store/store.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/repositories/order/order_repository.dart';
-import 'package:pomangam/repositories/store/store_repository.dart';
-import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
-import 'package:pomangam/views/mobile/widgets/order/view/order_view_type.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class OrderModel with ChangeNotifier {
 
   /// repository
   OrderRepository _orderRepository = Get.find(tag: 'orderRepository');
-  StoreRepository _storeRepository = Get.find(tag: 'storeRepository');
 
   /// model
   List<OrderResponse> orders = List();
@@ -33,8 +27,6 @@ class OrderModel with ChangeNotifier {
   int curPage = 0;
   int size = 200;
   int last;
-  OrderOnOff onOff = OrderOnOff.ON;
-  bool isOnOffChanging = false;
 
   /// model fetch
   Future<void> fetchAll({
@@ -295,40 +287,10 @@ class OrderModel with ChangeNotifier {
     curPage = 0;
     size = 200;
     last = null;
-    isOnOffChanging = false;
     orders.clear();
     detail = null;
     clearOrderChanging();
     if(notify) {
-      notifyListeners();
-    }
-  }
-
-  void toggleOrderOnOff() {
-    if(this.onOff == OrderOnOff.ON) {
-      this.onOff = OrderOnOff.OFF;
-    } else {
-      this.onOff = OrderOnOff.ON;
-    }
-    notifyListeners();
-  }
-
-  Future<void> changeOrderOnOff(OrderOnOff onOff) async {
-    if(isOnOffChanging) return;
-    try {
-      isOnOffChanging = true;
-      notifyListeners();
-
-      await _storeRepository.patch(
-        sIdx: Get.context.read<SignInModel>().ownerInfo.idxStore,
-        store: Store(storeSchedule: StoreSchedule(isOpening: onOff == OrderOnOff.ON))
-      );
-      this.onOff = onOff;
-    } catch(error) {
-      debug('OrderModel.changeOrderOnOff Error', error: error);
-      DialogUtils.dialog(Get.context, '$error');
-    } finally {
-      isOnOffChanging = false;
       notifyListeners();
     }
   }

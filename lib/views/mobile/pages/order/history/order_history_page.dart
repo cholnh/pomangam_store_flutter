@@ -22,7 +22,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   GlobalKey scrollTarget;
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
-
   @override
   void initState() {
     //_loading();

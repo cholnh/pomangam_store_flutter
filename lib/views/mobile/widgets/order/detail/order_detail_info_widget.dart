@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/payment/payment_type.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailInfoWidget extends StatelessWidget {
 
@@ -36,6 +38,26 @@ class OrderDetailInfoWidget extends StatelessWidget {
               rightText: '${order.boxNumber}번'
           ),
           SizedBox(height: height),
+          if(order.ordererName != null) _text(
+              leftText: '성함',
+              rightText: '${order.ordererName}'
+          ),
+          if(order.ordererName != null) SizedBox(height: height),
+          if(order.ordererPn != null) _text(
+              leftText: '전화번호',
+              rightText: '${order.ordererPn}',
+              onRightTap: () async {
+                if(!kIsWeb) {
+                  String tel = 'tel:${order.ordererPn}';
+                  if (await canLaunch(tel)) {
+                    await launch(tel);
+                  } else {
+                    throw 'Could not launch $tel';
+                  }
+                }
+              }
+          ),
+          if(order.ordererPn != null) SizedBox(height: height),
           _text(
               leftText: '승인일시',
               rightText: '${_date(order.registerDate)}'
@@ -64,7 +86,8 @@ class OrderDetailInfoWidget extends StatelessWidget {
   Widget _text({
     String leftText = '',
     String rightText = '',
-    Color color
+    Color color,
+    Function onRightTap
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -78,10 +101,15 @@ class OrderDetailInfoWidget extends StatelessWidget {
           ), maxLines: 2, overflow: TextOverflow.ellipsis),
         ),
         Expanded(
-          child: Text(rightText, style: TextStyle(
-              fontSize: 14,
-              color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
-          )),
+          child: GestureDetector(
+            onTap: onRightTap != null ? onRightTap : (){},
+            child: Text(rightText, style: TextStyle(
+                fontSize: 14,
+                fontWeight: onRightTap != null ? FontWeight.bold : FontWeight.normal,
+                decoration: onRightTap != null ? TextDecoration.underline : TextDecoration.none,
+                color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
+            )),
+          ),
         ),
       ],
     );
