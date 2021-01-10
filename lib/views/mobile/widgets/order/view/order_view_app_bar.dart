@@ -23,22 +23,24 @@ class OrderViewAppBar extends AppBar {
               color: Colors.transparent,
               child: Column(
                 children: [
-                  Column(
-                    children: [
-                      Consumer<DeliverySiteModel>(
-                        builder: (_, model, __) {
-                          return Text('${model.userDeliverySite.name}', style: const TextStyle(fontSize: 15.0, color: Colors.black));
-                        }
-                      ),
-                      Consumer<DeliveryDetailSiteModel>(
-                        builder: (_, model, __) {
-                          return Text(model.userDeliveryDetailSite.isNull
+                  Consumer<DeliverySiteModel>(
+                      builder: (_, model, __) {
+                        return Text(model.userDeliverySite.isNull
                             ? '전체'
-                            : '${model.userDeliveryDetailSite.name}', style: const TextStyle(fontSize: 11, color: Colors.grey));
-                        }
-                      )
-                    ],
+                            : '${model.userDeliverySite.name}', style: const TextStyle(fontSize: 15.0, color: Colors.black));
+                      }
                   ),
+                  Consumer<DeliveryDetailSiteModel>(
+                      builder: (_, model, __) {
+                        if(Get.context.read<DeliverySiteModel>().userDeliverySite.isNull) {
+                          return Container();
+                        } else {
+                          return Text(model.userDeliveryDetailSite.isNull
+                              ? '전체'
+                              : '${model.userDeliveryDetailSite.name}', style: const TextStyle(fontSize: 11, color: Colors.grey));
+                        }
+                      }
+                  )
                 ],
               ),
             ),

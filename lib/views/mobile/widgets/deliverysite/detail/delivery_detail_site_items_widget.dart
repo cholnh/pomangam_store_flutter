@@ -132,7 +132,6 @@ class _DeliveryDetailSiteItemsWidgetState extends State<DeliveryDetailSiteItemsW
     DeliveryDetailSiteModel detailSiteModel = context.read();
 
     try {
-      bool isSuccess = true;
       deliverySiteModel.changeIsChanging(true);
 
       SharedPreferences pref = await SharedPreferences.getInstance();
@@ -151,19 +150,15 @@ class _DeliveryDetailSiteItemsWidgetState extends State<DeliveryDetailSiteItemsW
       await orderModel.fetchAll(
           dIdx: widget.deliverySite?.idx,
           ddIdx: detailSite?.idx,
-          otIdx: orderTimeModel.userOrderTime?.idx,
+          otIdx: null, //orderTimeModel.userOrderTime?.idx,
           oDate: orderTimeModel.userOrderDate,
           isForceUpdate: true
       );
 
       Get.offAll(BasePage(), transition: Transition.cupertino);
 
-      // toast 메시지
-      ToastUtils.showToast(
-        msg: isSuccess
-            ? '적용완료'
-            : '적용실패',
-      );
+      ToastUtils.showToast(msg: '적용완료');
+
     } finally {
       deliverySiteModel.changeIsChanging(false);
     }

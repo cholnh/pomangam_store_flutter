@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/payment/payment_type.dart';
+import 'package:pomangam/providers/order/order_model.dart';
+import 'package:pomangam/providers/sign/sign_in_model.dart';
+import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailInfoWidget extends StatelessWidget {
@@ -46,6 +50,7 @@ class OrderDetailInfoWidget extends StatelessWidget {
           if(order.ordererPn != null) _text(
               leftText: '전화번호',
               rightText: '${order.ordererPn}',
+              rightUnderline: true,
               onRightTap: () async {
                 if(!kIsWeb) {
                   String tel = 'tel:${order.ordererPn}';
@@ -78,7 +83,60 @@ class OrderDetailInfoWidget extends StatelessWidget {
               rightText: '${_textDate(order.orderDate)} ${_textTime(order)}'
           ),
           SizedBox(height: height),
+          _text(
+            leftText: '비고',
+            rightText: order.note.isNullOrBlank
+              ? '작성하기'
+              : '${order.note}',
+            rightUnderline: order.note.isNullOrBlank,
+            color: Theme.of(context).primaryColor,
+            onRightTap: () => _writeNote()
+          ),
         ],
+      ),
+    );
+  }
+
+  void _writeNote() {
+    final TextEditingController _controller = TextEditingController();
+    _controller.text = order.note.isNullOrBlank ? '' : order.note;
+    DialogUtils.dialogYesOrNo(Get.context, '간단한 메모를 입력해주세요.',
+        contents: _contents(_controller),
+        height: 250,
+        confirm: '저장',
+        onConfirm: (_) async {
+          if(_controller.text != order.note) {
+            Get.context.read<OrderModel>().patchNote(
+              sIdx: Get.context.read<SignInModel>().ownerInfo.idxStore,
+              oIdx: order.idx,
+              note: _controller.text
+            );
+          }
+        },
+        cancel: '취소'
+    );
+  }
+
+  Widget _contents(TextEditingController _controller) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      color: Colors.grey[100],
+      height: 100,
+      child: TextFormField(
+          scrollPhysics: BouncingScrollPhysics(),
+          controller: _controller,
+          autocorrect: false,
+          enableSuggestions: false,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          style: TextStyle(fontSize: 15, color: Colors.black),
+          textAlign: TextAlign.start,
+          decoration: InputDecoration(
+            focusedBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+          )
       ),
     );
   }
@@ -87,6 +145,7 @@ class OrderDetailInfoWidget extends StatelessWidget {
     String leftText = '',
     String rightText = '',
     Color color,
+    bool rightUnderline = false,
     Function onRightTap
   }) {
     return Row(
@@ -106,7 +165,7 @@ class OrderDetailInfoWidget extends StatelessWidget {
             child: Text(rightText, style: TextStyle(
                 fontSize: 14,
                 fontWeight: onRightTap != null ? FontWeight.bold : FontWeight.normal,
-                decoration: onRightTap != null ? TextDecoration.underline : TextDecoration.none,
+                decoration: rightUnderline ? TextDecoration.underline : TextDecoration.none,
                 color: color == null ? Theme.of(Get.context).textTheme.headline1.color : color
             )),
           ),

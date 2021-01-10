@@ -38,6 +38,7 @@ class OrderViewContentWidget extends StatelessWidget {
           subtitle2: _subtitle2(),
           cashReceipt: order.cashReceipt,
           cashReceiptType: order.cashReceiptType,
+          note: order.note
         );
 
       case OrderType.DELIVERY_READY:
@@ -55,6 +56,7 @@ class OrderViewContentWidget extends StatelessWidget {
           pickUpTime: context.watch<OrderTimeModel>().getPickUpTime(order.idxOrderTime),
           cashReceipt: order.cashReceipt,
           cashReceiptType: order.cashReceiptType,
+          note: order.note
         );
 
       case OrderType.DELIVERY_SUCCESS:
@@ -68,6 +70,7 @@ class OrderViewContentWidget extends StatelessWidget {
             subtitle2: _subtitle2(),
             cashReceipt: order.cashReceipt,
             cashReceiptType: order.cashReceiptType,
+            note: order.note
         );
 
       case OrderType.MISS_BY_DELIVERER:
@@ -82,6 +85,7 @@ class OrderViewContentWidget extends StatelessWidget {
             status: '기사누락',
             cashReceipt: order.cashReceipt,
             cashReceiptType: order.cashReceiptType,
+            note: order.note
         );
       case OrderType.MISS_BY_STORE:
         return OrderViewContentDoneWidget(
@@ -95,6 +99,7 @@ class OrderViewContentWidget extends StatelessWidget {
             status: '업체누락',
             cashReceipt: order.cashReceipt,
             cashReceiptType: order.cashReceiptType,
+            note: order.note
         );
       case OrderType.RE_DELIVERY:
         return OrderViewContentDoneWidget(
@@ -108,6 +113,7 @@ class OrderViewContentWidget extends StatelessWidget {
             status: '재배달',
             cashReceipt: order.cashReceipt,
             cashReceiptType: order.cashReceiptType,
+            note: order.note
         );
 
       default: return Container();
@@ -202,7 +208,7 @@ class OrderViewContentWidget extends StatelessWidget {
   }
 
   String _subtitle2() {
-    return '${_payment()} ${StringUtils.comma(_storeTotalPrice())}원';
+    return '${_payment()} ${StringUtils.comma(_storeTotalPrice() - order.discountCost)}원';
   }
 
   int _storeTotalPrice() {

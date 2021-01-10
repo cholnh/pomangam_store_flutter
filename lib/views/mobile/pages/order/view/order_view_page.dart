@@ -11,11 +11,13 @@ import 'package:pomangam/providers/deliverysite/detail/delivery_detail_site_mode
 import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
+import 'package:pomangam/views/mobile/pages/order/add/order_add_page.dart';
 import 'package:pomangam/views/mobile/pages/order/detail/order_detail_page.dart';
 import 'package:pomangam/views/mobile/pages/order/detail/order_detail_page_type.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_divider.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_refresher.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_shimmer.dart';
+import 'package:pomangam/views/mobile/widgets/order/view/content/order_view_content_total_widget.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/content/order_view_content_widget.dart';
 import 'package:pomangam/views/mobile/widgets/order/view/order_view_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -87,11 +89,25 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
     super.dispose();
   }
 
+  void _onButtonPressed() {
+    context.read<DeliverySiteModel>().clear(notify: false);
+    context.read<DeliveryDetailSiteModel>().clear(notify: false);
+    Get.to(OrderAddPage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: OrderViewAppBar(),
+      floatingActionButton: SizedBox(
+        height: 45,
+        child: FloatingActionButton(
+          child: Icon(Icons.add, size: 20, color: Colors.grey[700]),
+          backgroundColor: Colors.grey[200],
+          onPressed: _onButtonPressed,
+        ),
+      ),
       body: SafeArea(
         child: CustomRefresher(
           controller: _refreshController,
@@ -103,7 +119,8 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
               builder: (_, model, __) {
                 if(model.isFetching) return _shimmer();
                 if(model.orders.isEmpty) return _empty();
-                if(context.read<OrderTimeModel>().userOrderTime == null) return _total(model.orders);
+                if(context.read<DeliverySiteModel>().userDeliverySite == null ||
+                    context.read<OrderTimeModel>().userOrderTime == null) return _total(model.orders);
                 return Column(
                   children: [
                     for(OrderResponse order in model.orders) Column(
@@ -128,12 +145,6 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
     );
   }
 
-  String _textTime(String time) {
-    String h = time.split(':')[0];
-    String m = time.split(':')[1];
-    return '$h시' + (m == '00' ? '' : ' $m분');
-  }
-
   Widget _total(List<OrderResponse> orders) {
     Set<String> times = Set();
     orders.forEach((order) {
@@ -141,47 +152,12 @@ class _OrderViewPageState extends State<OrderViewPage> with WidgetsBindingObserv
     });
     return Column(
       children: [
-        for(int i=0; i<times.length; i++) Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey[300],
-                    width: 0.5
-                  )
-                ),
-              ),
-              padding: EdgeInsets.only(top: i == 0 ? 18 : 10, bottom: 18),
-              child: Center(
-                child: Text(_textTime(times.elementAt(i)), style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold
-                )),
-              ),
-            ),
-            Column(
-              children: [
-                for(OrderResponse order in orders)
-                  if(order.arrivalTime == times.elementAt(i))
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            context.read<OrderModel>().detail = order;
-                            Get.to(OrderDetailPage(pageType: OrderDetailPageType.FROM_VIEW));
-                          },
-                          child: OrderViewContentWidget(order: order)
-                        ),
-                        CustomDivider()
-                      ],
-                    ),
-              ],
-            )
-          ],
-        )
+        for(int i=0; i<times.length; i++)
+          OrderViewContentTotalWidget(
+            index: i,
+            orders: orders,
+            times: times,
+          )
       ]
     );
   }

@@ -12,12 +12,16 @@ Future<bool> deliveryDetailSiteDataInitialize({
 => logProcess(
     name: 'deliveryDetailSiteDataInitialize',
     function: () async {
-      int dIdx = Get.context.read<DeliverySiteModel>().userDeliverySite.idx;
-      if(ddIdx != null) {
-        await Get.context.read<DeliveryDetailSiteModel>().changeUserDeliveryDetailSiteByIdx(dIdx: dIdx, ddIdx: ddIdx);
-      } else {
-        (await SharedPreferences.getInstance())
-          ..setInt(s.idxDeliveryDetailSite, null);
+      DeliverySiteModel deliverySiteModel = Get.context.read();
+
+      if(deliverySiteModel.userDeliverySite != null) {
+        int dIdx = deliverySiteModel.userDeliverySite.idx;
+        if(ddIdx != null) {
+          await Get.context.read<DeliveryDetailSiteModel>().changeUserDeliveryDetailSiteByIdx(dIdx: dIdx, ddIdx: ddIdx);
+        } else {
+          (await SharedPreferences.getInstance())
+            ..setInt(s.idxDeliveryDetailSite, null);
+        }
       }
       return true;
     }

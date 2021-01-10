@@ -321,6 +321,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
+  flutter_cupertino_date_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "3a6b1513d77636976794b6c64630b7ae219fb371"
+      url: "https://github.com/imshashank/flutter-cupertino-date-picker"
+    source: git
+    version: "1.0.26+2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -421,7 +430,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.18"
+    version: "2.1.13"
   import_js_library:
     dependency: transitive
     description:
@@ -944,7 +953,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.1"
+    version: "3.7.0"
   yaml:
     dependency: transitive
     description:

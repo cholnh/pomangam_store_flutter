@@ -16,13 +16,43 @@ class OrderTimeModel with ChangeNotifier {
   OrderTime userOrderTime;
   DateTime userOrderDate;
 
+  DateTime selectedOrderDate;
+  DateTime viewSelectedOrderDate;
+  OrderTime selected;
+  OrderTime viewSelected;
+
   bool isOrderDateMode = false;
   bool isOrderDateChanged = false;
   DateTime viewUserOrderDate;
 
-  void clear() {
-    orderTimes.clear();
-    userOrderTime = null;
+  void clear({bool notify = true}) {
+    this.orderTimes.clear();
+    this.selected = null;
+    this.viewSelected = null;
+    this.userOrderTime = null;
+    if(notify) {
+      notifyListeners();
+    }
+  }
+
+  void changeSelectedOrderDate(DateTime orderDate) {
+    this.selectedOrderDate = orderDate;
+    notifyListeners();
+  }
+
+  void changeViewSelectedOrderDate(DateTime orderDate) {
+    this.viewSelectedOrderDate = orderDate;
+    notifyListeners();
+  }
+
+  void changeSelected(OrderTime orderTime) {
+    this.selected = orderTime;
+    notifyListeners();
+  }
+
+  void changeViewSelected(OrderTime orderTime) {
+    this.viewSelected = orderTime;
+    notifyListeners();
   }
 
   Future<void> fetch({
@@ -43,15 +73,18 @@ class OrderTimeModel with ChangeNotifier {
   }
 
   OrderTime orderableFirstTime() {
-    DateTime now = DateTime.now();
-    for(OrderTime orderTime in orderTimes) {
-      if(now.isBefore(orderTime.getOrderEndDateTime())) {
-        userOrderDate = now;
-        return orderTime;
-      }
-    }
-    userOrderDate = now + 1.days;
-    return orderTimes.first;
+    userOrderDate = userOrderDate ?? DateTime.now();
+    return null;
+
+    // DateTime now = DateTime.now();
+    // for(OrderTime orderTime in orderTimes) {
+    //   if(now.isBefore(orderTime.getOrderEndDateTime())) {
+    //     userOrderDate = now;
+    //     return orderTime;
+    //   }
+    // }
+    // userOrderDate = now + 1.days;
+    // return orderTimes.first;
   }
 
   bool isOverUserTime() {

@@ -2,7 +2,7 @@ name: pomangam
 description: 포만감 업주용 플러터 애플리케이션 (version_1.0)
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+3
+version: 1.0.0+5
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -70,6 +70,11 @@ dependencies:
   neat_periodic_task: ^1.0.1
 
   wakelock: ^0.2.1
+
+  flutter_cupertino_date_picker:
+    git:
+      url: https://github.com/imshashank/flutter-cupertino-date-picker # Repo
+      ref: master # Branch name
 
 dev_dependencies:
   flutter_test:

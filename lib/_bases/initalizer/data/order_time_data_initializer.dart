@@ -9,8 +9,15 @@ Future<bool> orderTimeDataInitialize() async
     name: 'orderTimeDataInitialize',
     function: () async {
       OrderTimeModel orderTimeModel = Get.context.read<OrderTimeModel>();
-      int dIdx = Get.context.read<DeliverySiteModel>().userDeliverySite.idx;
-      await orderTimeModel.fetch(forceUpdate: true, dIdx: dIdx);
+      DeliverySiteModel deliverySiteModel = Get.context.read();
+
+      orderTimeModel.userOrderDate ??= DateTime.now();
+
+      if(deliverySiteModel.userDeliverySite != null) {
+        int dIdx = deliverySiteModel.userDeliverySite.idx;
+        await orderTimeModel.fetch(forceUpdate: true, dIdx: dIdx);
+      }
+
       return true;
     }
 );

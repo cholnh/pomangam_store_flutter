@@ -114,7 +114,12 @@ class OrderHistoryContentWidget extends StatelessWidget {
                       )),
                     ),
                   ],
-                )
+                ),
+                if(order.note != null && order.note.isNotEmpty) SizedBox(height: 5),
+                if(order.note != null && order.note.isNotEmpty) Text('비고: ${order.note}', style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).primaryColor
+                )),
               ],
             ),
           ),
@@ -211,7 +216,7 @@ class OrderHistoryContentWidget extends StatelessWidget {
   }
 
   String _subtitle2() {
-    return '${_payment()} ${StringUtils.comma(_storeTotalPrice())}원';
+    return '${_payment()} ${StringUtils.comma(_storeTotalPrice() - order.discountCost)}원';
   }
 
   int _storeTotalPrice() {

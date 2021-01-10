@@ -45,4 +45,14 @@ class Product extends EntityAuditing {
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
   Map<String, dynamic> toJson() => _$ProductToJson(this);
+  static List<Product> fromJsonList(List<dynamic> jsonList) {
+    List<Product> entities = [];
+    jsonList.forEach((map) => entities.add(Product.fromJson(map)));
+    return entities;
+  }
+
+  @override
+  String toString() {
+    return 'Product{idxStore: $idxStore, salePrice: $salePrice, productInfo: $productInfo, productCategoryTitle: $productCategoryTitle, cntLike: $cntLike, cntReply: $cntReply, sequence: $sequence, productImageMainPath: $productImageMainPath, productImageSubPaths: $productImageSubPaths, isLike: $isLike, replies: $replies, productSubCategories: $productSubCategories, productType: $productType, isTempActive: $isTempActive}';
+  }
 }

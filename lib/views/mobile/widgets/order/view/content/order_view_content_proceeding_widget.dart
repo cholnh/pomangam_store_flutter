@@ -16,6 +16,7 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
   final CountDownController _controller = CountDownController();
   final String cashReceipt;
   final CashReceiptType cashReceiptType;
+  final String note;
 
   OrderViewContentProceedingWidget({
     this.idx,
@@ -29,6 +30,7 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
     this.pickUpTime,
     this.cashReceipt,
     this.cashReceiptType,
+    this.note
   });
 
   @override
@@ -114,7 +116,12 @@ class OrderViewContentProceedingWidget extends StatelessWidget {
                       )),
                     ),
                   ],
-                )
+                ),
+                if(note != null && note.isNotEmpty) SizedBox(height: 5),
+                if(note != null && note.isNotEmpty) Text('비고: $note', style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).primaryColor
+                )),
               ],
             ),
           ),

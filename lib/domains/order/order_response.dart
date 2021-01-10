@@ -20,6 +20,7 @@ class OrderResponse extends EntityAuditing {
   OrdererType ordererType;
   String ordererName;
   String ordererPn;
+  String note;
 
   // 결제 정보
   int usingPoint;
@@ -53,7 +54,7 @@ class OrderResponse extends EntityAuditing {
   OrderResponse({
     int idx, DateTime registerDate, DateTime modifyDate,
     this.orderType, this.boxNumber, this.paymentType,
-    this.ordererType, this.ordererName, this.ordererPn, this.usingPoint, this.usingCoupons,
+    this.ordererType, this.ordererName, this.ordererPn, this.note, this.usingPoint, this.usingCoupons,
     this.usingPromotions, this.savedPoint, this.cashReceipt, this.cashReceiptType, this.totalCost,
     this.discountCost, this.paymentCost, this.idxDeliverySite,
     this.idxDeliveryDetailSite, this.nameDeliverySite,

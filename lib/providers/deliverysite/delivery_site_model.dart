@@ -3,13 +3,15 @@ import 'package:get/get.dart';
 import 'package:pomangam/domains/deliverysite/delivery_site.dart';
 import 'package:pomangam/repositories/delivery/delivery_site_repository.dart';
 
-
 class DeliverySiteModel with ChangeNotifier {
   DeliverySiteRepository _deliverySiteRepository = Get.find(tag: 'deliverySiteRepository');
 
   List<DeliverySite> deliverySites = List();
   List<DeliverySite> userDeliverySites = List();
   DeliverySite userDeliverySite;
+
+  DeliverySite selected;
+  DeliverySite viewSelected;
 
   bool isFetching = false;
   bool isSearching = false;
@@ -77,5 +79,24 @@ class DeliverySiteModel with ChangeNotifier {
   void changeIsChanging(bool tf) {
     this.isChanging = tf;
     notifyListeners();
+  }
+
+  void changeSelected(DeliverySite deliverySite) {
+    this.selected = deliverySite;
+    notifyListeners();
+  }
+
+  void changeViewSelected(DeliverySite deliverySite) {
+    this.viewSelected = deliverySite;
+    notifyListeners();
+  }
+
+  void clear({bool notify = true}) {
+    this.deliverySites.clear();
+    this.selected = null;
+    this.viewSelected = null;
+    if(notify) {
+      notifyListeners();
+    }
   }
 }

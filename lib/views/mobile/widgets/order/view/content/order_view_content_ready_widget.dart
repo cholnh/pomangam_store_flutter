@@ -20,6 +20,7 @@ class OrderViewContentReadyWidget extends StatefulWidget {
   final String subtitle2;
   final String cashReceipt;
   final CashReceiptType cashReceiptType;
+  final String note;
 
   OrderViewContentReadyWidget({
     this.idx,
@@ -31,6 +32,7 @@ class OrderViewContentReadyWidget extends StatefulWidget {
     this.subtitle2,
     this.cashReceipt,
     this.cashReceiptType,
+    this.note
   });
 
   @override
@@ -134,7 +136,12 @@ class _OrderViewContentReadyWidgetState extends State<OrderViewContentReadyWidge
                         )),
                       ),
                     ],
-                  )
+                  ),
+                  if(widget.note != null && widget.note.isNotEmpty) SizedBox(height: 5),
+                  if(widget.note != null && widget.note.isNotEmpty) Text('비고: ${widget.note}', style: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context).primaryColor
+                  )),
                 ],
               ),
             ),

@@ -11,6 +11,11 @@ import 'package:pomangam/_bases/network/domain/token.dart';
 import 'package:pomangam/_bases/network/repository/authorization_repository.dart';
 import 'package:pomangam/_bases/network/repository/resource_repository.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
+import 'package:pomangam/providers/sign/sign_in_model.dart';
+import 'package:pomangam/views/mobile/pages/_bases/base_page.dart';
+import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
+import 'package:pomangam/views/splash_page.dart';
+import 'package:provider/provider.dart';
 
 class Api implements NetworkService {
 
@@ -159,10 +164,19 @@ class Api implements NetworkService {
         case HttpStatus.unauthorized: // 401
           try {
             await Get.find<Initializer>(tag: 'initializer').initializeToken();
-            if(logic != null) logic();
+            //if(logic != null) logic();
           } catch(e) {
-            print('shutdown $e');
-            throw Exception();
+            print('shutdown - signout $e');
+            SignInModel signInModel = Get.context.read();
+            DialogUtils.dialog(Get.context, '접근거부로 인해 로그아웃됩니다.', height: 180, onPressed: (dialogContext) async {
+              if(!signInModel.isSigningOut) {
+                await signInModel.signOut();
+                Get.offAll(SplashPage(), transition: Transition.fade);
+                if( Navigator.of(dialogContext).canPop()) {
+                  Navigator.of(dialogContext).pop();
+                }
+              }
+            });
           }
           // await Get.find(tag: 'initializer')
           //   .initialize(

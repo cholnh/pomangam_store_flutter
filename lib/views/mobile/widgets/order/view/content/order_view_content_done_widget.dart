@@ -13,6 +13,7 @@ class OrderViewContentDoneWidget extends StatelessWidget {
   final String status;
   final String cashReceipt;
   final CashReceiptType cashReceiptType;
+  final String note;
 
   OrderViewContentDoneWidget({
     this.idx,
@@ -25,6 +26,7 @@ class OrderViewContentDoneWidget extends StatelessWidget {
     this.status = '완료',
     this.cashReceipt,
     this.cashReceiptType,
+    this.note
   });
 
   @override
@@ -110,7 +112,12 @@ class OrderViewContentDoneWidget extends StatelessWidget {
                       )),
                     ),
                   ],
-                )
+                ),
+                if(note != null && note.isNotEmpty) SizedBox(height: 5),
+                if(note != null && note.isNotEmpty) Text('비고: $note', style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).primaryColor
+                )),
               ],
             ),
           ),

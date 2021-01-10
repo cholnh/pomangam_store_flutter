@@ -18,11 +18,11 @@ Future<bool> deliverySiteDataInitialize({
       await deliverySiteModel.fetchByIdxStore(sIdx: sIdx);
       if(deliverySiteModel.userDeliverySites.isNotEmpty) {
         if(dIdx == null) {
-          DeliverySite dsite = deliverySiteModel.userDeliverySites.first;
-
-          deliverySiteModel.changeUserDeliverySite(dsite);
-          (await SharedPreferences.getInstance())
-            ..setInt(s.idxDeliverySite, dsite.idx);
+          // DeliverySite dsite = deliverySiteModel.userDeliverySites.first;
+          //
+          // deliverySiteModel.changeUserDeliverySite(dsite);
+          // (await SharedPreferences.getInstance())
+          //   ..setInt(s.idxDeliverySite, dsite.idx);
 
         } else {
           bool isChanged = false;

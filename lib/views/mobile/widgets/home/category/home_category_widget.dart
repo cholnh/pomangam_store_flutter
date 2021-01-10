@@ -26,7 +26,7 @@ class HomeCategoryWidget extends StatelessWidget {
           _divider(),
           _menu(title: '직원 관리', icon: Icon(Icons.supervisor_account_outlined, size: 20, color: Colors.black)),
           _divider(),
-          _menu(title: '매출 관리', icon: Icon(Icons.money_outlined, size: 20, color: Colors.black))
+          _menu(title: '매출 관리', icon: Icon(Icons.money_outlined, size: 20, color: Colors.black)),
         ],
       ),
     );

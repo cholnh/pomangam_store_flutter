@@ -47,7 +47,7 @@ class SignRepository {
   Future<void> signOut({bool trySignInGuest = true}) async {
     Token.clearFromDisk();
     Token.clearFromDioHeader();
-    (await SharedPreferences.getInstance()).remove(s.userId);
+    //(await SharedPreferences.getInstance()).remove(s.userId);
     await initializer.deleteFcmTokenClientInfo();
     if(trySignInGuest) {
       await initializer.initializeToken();

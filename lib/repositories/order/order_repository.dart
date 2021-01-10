@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/_bases/network/api/api.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
+import 'package:pomangam/domains/order/order_request.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 
 class OrderRepository {
@@ -54,6 +55,20 @@ class OrderRepository {
     @required int sIdx,
     @required int oIdx
   }) async => OrderResponse.fromJson((await api.post(url: '/store/$sIdx/orders/$oIdx/deliveries/success')).data);
+
+  Future<OrderResponse> patchNote({
+    @required int sIdx,
+    @required int oIdx,
+    @required String note
+  }) async => OrderResponse.fromJson((await api.patch(url: '/store/$sIdx/orders/$oIdx/note?note=$note')).data);
+
+  Future<OrderResponse> saveOrder({
+    @required int sIdx,
+    @required OrderRequest orderRequest
+  }) async => OrderResponse.fromJson((await api.post(
+      url: '/store/$sIdx/orders',
+      data: orderRequest.toJson()
+  )).data);
 }
 
 class Url {

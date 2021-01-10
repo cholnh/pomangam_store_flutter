@@ -9,6 +9,9 @@ class DeliveryDetailSiteModel with ChangeNotifier {
   List<DeliveryDetailSite> deliveryDetailSites = List();
   DeliveryDetailSite userDeliveryDetailSite;
 
+  DeliveryDetailSite selected;
+  DeliveryDetailSite viewSelected;
+
   bool isFetching = false;
 
   Future<void> fetch({
@@ -44,5 +47,24 @@ class DeliveryDetailSiteModel with ChangeNotifier {
   void changeUserDeliveryDetailSite(DeliveryDetailSite deliveryDetailSite) {
     this.userDeliveryDetailSite = deliveryDetailSite;
     notifyListeners();
+  }
+
+  void changeSelected(DeliveryDetailSite detailSite) {
+    this.selected = detailSite;
+    notifyListeners();
+  }
+
+  void changeViewSelected(DeliveryDetailSite detailSite) {
+    this.viewSelected = detailSite;
+    notifyListeners();
+  }
+
+  void clear({bool notify = true}) {
+    this.deliveryDetailSites.clear();
+    this.selected = null;
+    this.viewSelected = null;
+    if(notify) {
+      notifyListeners();
+    }
   }
 }

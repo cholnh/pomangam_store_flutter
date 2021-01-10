@@ -1,1 +1,1 @@
-enum OrdererType { GUEST, USER }
+enum OrdererType { GUEST, USER, WEB, ADMIN }

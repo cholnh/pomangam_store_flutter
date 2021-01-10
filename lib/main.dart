@@ -12,6 +12,8 @@ import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/providers/order/order_view_sort_model.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
+import 'package:pomangam/providers/payment/payment_model.dart';
+import 'package:pomangam/providers/product/product_model.dart';
 import 'package:pomangam/providers/store/store_model.dart';
 import 'package:pomangam/providers/vbank/vbank_model.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +61,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderHistoryModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => StoreModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => VBankModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => ProductModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => PaymentModel(), lazy: true),
+
       ],
       child: GetMaterialApp(
         title: '포만감 사장님',

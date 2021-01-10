@@ -23,6 +23,7 @@ OrderResponse _$OrderResponseFromJson(Map<String, dynamic> json) {
         _$enumDecodeNullable(_$OrdererTypeEnumMap, json['ordererType']),
     ordererName: json['ordererName'] as String,
     ordererPn: json['ordererPn'] as String,
+    note: json['note'] as String,
     usingPoint: json['usingPoint'] as int,
     usingCoupons: (json['usingCoupons'] as List)
         ?.map((e) =>
@@ -68,6 +69,7 @@ Map<String, dynamic> _$OrderResponseToJson(OrderResponse instance) =>
       'ordererType': _$OrdererTypeEnumMap[instance.ordererType],
       'ordererName': instance.ordererName,
       'ordererPn': instance.ordererPn,
+      'note': instance.note,
       'usingPoint': instance.usingPoint,
       'usingCoupons': instance.usingCoupons?.map((e) => e?.toJson())?.toList(),
       'usingPromotions':
@@ -157,6 +159,9 @@ const _$PaymentTypeEnumMap = {
 const _$OrdererTypeEnumMap = {
   OrdererType.GUEST: 'GUEST',
   OrdererType.USER: 'USER',
+  OrdererType.WEB: 'WEB',
+  OrdererType.ADMIN: 'ADMIN',
+
 };
 
 const _$CashReceiptTypeEnumMap = {

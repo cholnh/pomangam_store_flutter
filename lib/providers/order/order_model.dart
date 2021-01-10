@@ -5,6 +5,7 @@ import 'package:pomangam/_bases/util/log_utils.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
 import 'package:pomangam/domains/order/item/order_item_response.dart';
 import 'package:pomangam/domains/order/item/sub/order_item_sub_response.dart';
+import 'package:pomangam/domains/order/order_request.dart';
 import 'package:pomangam/domains/order/order_response.dart';
 import 'package:pomangam/domains/order/order_type.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
@@ -19,6 +20,7 @@ class OrderModel with ChangeNotifier {
   /// model
   List<OrderResponse> orders = List();
   OrderResponse detail;
+  OrderResponse orderResponse;
 
   /// data
   bool isFetching = false;
@@ -27,6 +29,8 @@ class OrderModel with ChangeNotifier {
   int curPage = 0;
   int size = 200;
   int last;
+
+  bool isSaving = false;
 
   /// model fetch
   Future<void> fetchAll({
@@ -248,6 +252,57 @@ class OrderModel with ChangeNotifier {
 
     } catch(error) {
       debug('OrderModel.deliverySuccess Error', error: error);
+    } finally {
+      orderChanging(oIdx, false);
+      notifyListeners();
+    }
+  }
+
+  Future<OrderResponse> save({
+    @required int sIdx,
+    @required OrderRequest orderRequest
+  }) async {
+    if(isSaving) return null;
+
+    this.orderResponse = null;
+    this.isSaving = true;
+    notifyListeners();
+
+    try {
+      this.orderResponse = await _orderRepository.saveOrder(
+        sIdx: sIdx,
+        orderRequest: orderRequest
+      );
+    } catch (error) {
+      print('[Debug] OrderModel.saveOrder Error - $error');
+      return null;
+    } finally {
+      this.isSaving = false;
+      notifyListeners();
+    }
+    return this.orderResponse;
+  }
+
+  Future<void> patchNote({
+    @required int sIdx,
+    @required int oIdx,
+    @required String note
+  }) async {
+    if(isOrderChanging(oIdx)) return;
+
+    try {
+      orderChanging(oIdx, true);
+      notifyListeners();
+
+      OrderResponse order = await _orderRepository.patchNote(
+        sIdx: sIdx,
+        oIdx: oIdx,
+        note: note
+      );
+      _changeOrder(order);
+
+    } catch(error) {
+      debug('OrderModel.patchNote Error', error: error);
     } finally {
       orderChanging(oIdx, false);
       notifyListeners();
