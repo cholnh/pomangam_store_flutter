@@ -24,4 +24,9 @@ class Promotion extends EntityAuditing {
 
   Map<String, dynamic> toJson() => _$PromotionToJson(this);
   factory Promotion.fromJson(Map<String, dynamic> json) => _$PromotionFromJson(json);
+  static List<Promotion> fromJsonList(List<dynamic> jsonList) {
+    List<Promotion> entities = [];
+    jsonList.forEach((map) => entities.add(Promotion.fromJson(map)));
+    return entities;
+  }
 }

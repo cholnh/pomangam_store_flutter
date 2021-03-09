@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pomangam/_bases/util/string_utils.dart';
 import 'package:pomangam/_bases/util/toast_utils.dart';
 import 'package:pomangam/domains/deliverysite/delivery_site.dart';
 import 'package:pomangam/domains/order/item/order_item_request.dart';
@@ -17,6 +18,7 @@ import 'package:pomangam/providers/order/order_model.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
 import 'package:pomangam/providers/payment/payment_model.dart';
 import 'package:pomangam/providers/product/product_model.dart';
+import 'package:pomangam/providers/promotion/promotion_model.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/basic_app_bar.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
@@ -54,6 +56,12 @@ class _OrderAddPageState extends State<OrderAddPage> {
     context.read<PaymentModel>()
       ..selectedCashReceipt = null
       ..viewSelectedCashReceipt = null;
+
+    context.read<OrderTimeModel>()
+      ..selectedOrderDate2 = null
+      ..viewSelectedOrderDate2 = null;
+
+    context.read<PromotionModel>().clear(notify: false);
   }
 
   @override
@@ -63,11 +71,26 @@ class _OrderAddPageState extends State<OrderAddPage> {
     DeliveryDetailSiteModel detailSiteModel = context.watch();
     OrderTimeModel orderTimeModel = context.watch();
     PaymentModel paymentModel = context.watch();
+    PromotionModel promotionModel = context.watch();
+
+    int promotionCost = 0;
+    promotionModel.promotions.forEach((promotion) {
+      if(promotion.isValid()) {
+        promotionCost += promotion.discountCost;
+      }
+    });
+
+    int totalQuantity = 0;
+    int totalCost = 0;
+    items.forEach((item) {
+      totalQuantity += item.quantity;
+      totalCost += (item.salesCost - promotionCost) * item.quantity;
+    });
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[100],
-      bottomNavigationBar: _bottom(),
+      bottomNavigationBar: _bottom(totalCost: totalCost),
       appBar: BasicAppBar(
         elevation: 1.0,
         title: '주문 추가',
@@ -100,7 +123,9 @@ class _OrderAddPageState extends State<OrderAddPage> {
                       leftText: '받는 날짜',
                       rightText: deliverySiteModel.selected.isNull
                         ? '선택해주세요'
-                        : '${DateFormat('yyyy-MM-dd').format(orderTimeModel.selectedOrderDate == null ? DateTime.now() : orderTimeModel.selectedOrderDate)} ${_textOrderTime(orderTimeModel.selected)}',
+                        : '${DateFormat('yyyy-MM-dd').format(orderTimeModel.selectedOrderDate == null ? DateTime.now() : orderTimeModel.selectedOrderDate)} ' +
+                          (orderTimeModel.selectedOrderDate2 == null ? '' : '~ ${DateFormat('yyyy-MM-dd').format(orderTimeModel.selectedOrderDate2)}\n')+
+                          '${_textOrderTime(orderTimeModel.selected)}',
                       onRightTap: _selectOrderDateTime
                     ),
                     SizedBox(height: height),
@@ -134,13 +159,24 @@ class _OrderAddPageState extends State<OrderAddPage> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
                       children: [
-                        Text('제품내역', style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                        )),
-                        Text('총 ${items.length}개', style: TextStyle(
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          children: [
+                            Text('제품내역', style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black
+                            )),
+                            if(!promotionModel.promotions.isNullOrBlank) SizedBox(width: 10),
+                            if(!promotionModel.promotions.isNullOrBlank) Text('프로모션 적용중 (${StringUtils.comma(promotionCost)}원)', style: TextStyle(
+                                fontSize: 13,
+                                color: Theme.of(context).textTheme.subtitle2.color
+                            )),
+                          ],
+                        ),
+                        Text('총 $totalQuantity개', style: TextStyle(
                             fontSize: 13,
                             color: Theme.of(context).textTheme.subtitle2.color
                         )),
@@ -148,7 +184,7 @@ class _OrderAddPageState extends State<OrderAddPage> {
                     ),
                     SizedBox(height: height),
                     for(int i=0; i<items.length; i++)
-                      _item(i, items[i]),
+                      _item(i, items[i], promotionCost: promotionCost),
                     GestureDetector(
                       onTap: _addItem,
                       child: Row(
@@ -174,7 +210,7 @@ class _OrderAddPageState extends State<OrderAddPage> {
     );
   }
 
-  Widget _item(int i, OrderItemRequest item) {
+  Widget _item(int i, OrderItemRequest item, {int promotionCost = 0}) {
     return Column(
       children: [
         Row(
@@ -182,7 +218,7 @@ class _OrderAddPageState extends State<OrderAddPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text('${i+1}. ${item.textProduct}', style: TextStyle(
+              child: Text('${i+1}. ${item.textProduct} (${StringUtils.comma((item.salesCost - promotionCost) * item.quantity)}원)', style: TextStyle(
                   fontSize: 15,
                   color: Theme.of(context).textTheme.headline1.color
               )),
@@ -217,35 +253,35 @@ class _OrderAddPageState extends State<OrderAddPage> {
     Function onRightTap,
     Color rightColor = Colors.black
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 80,
-          child: Text(leftText, style: TextStyle(
-              fontSize: 15,
-              color: Theme.of(Get.context).textTheme.subtitle2.color
-          )),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: onRightTap != null ? onRightTap : (){},
+    return GestureDetector(
+      onTap: onRightTap != null ? onRightTap : (){},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(leftText, style: TextStyle(
+                fontSize: 15,
+                color: Theme.of(Get.context).textTheme.subtitle2.color
+            )),
+          ),
+          Expanded(
             child: Text(rightText, style: TextStyle(
                 fontSize: 15,
                 color: rightColor
             )),
           ),
-        ),
-        SizedBox(
-            width: 15,
-            child: Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.black)
-        ),
-      ],
+          SizedBox(
+              width: 15,
+              child: Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.black)
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _bottom() {
+  Widget _bottom({int totalCost = 0}) {
     return Consumer<OrderModel>(
       builder: (_, model, __) {
         return GestureDetector(
@@ -260,7 +296,7 @@ class _OrderAddPageState extends State<OrderAddPage> {
                 )
             ),
             child: Center(
-              child: model.isSaving ? CupertinoActivityIndicator() : Text('추가', style: TextStyle(
+              child: model.isSaving ? CupertinoActivityIndicator() : Text('추가' + (totalCost != 0 ? ' (${StringUtils.comma(totalCost)}원)' : ''), style: TextStyle(
                   color: Theme.of(Get.context).primaryColor,
                   fontSize: 17
               )),
@@ -338,15 +374,26 @@ class _OrderAddPageState extends State<OrderAddPage> {
           height: 350,
           confirm: '완료',
           onConfirm: (_) async {
-            DeliverySiteModel deliverySiteModel = context.read();
-            deliverySiteModel.changeSelected(deliverySiteModel.viewSelected);
-            detailSiteModel.changeSelected(detailSiteModel.viewSelected);
+            if(detailSiteModel.viewSelected != null) {
+              DeliverySiteModel deliverySiteModel = context.read();
+              deliverySiteModel.changeSelected(deliverySiteModel.viewSelected);
+              detailSiteModel.changeSelected(detailSiteModel.viewSelected);
 
-            OrderTimeModel orderTimeModel = context.read();
-            orderTimeModel.fetch(dIdx: deliverySiteModel.selected.idx, forceUpdate: true);
-            orderTimeModel.selectedOrderDate = DateTime.now();
-            orderTimeModel.selected = orderTimeModel.orderTimes.isNullOrBlank ? null : orderTimeModel.orderTimes.first;
+              OrderTimeModel orderTimeModel = context.read();
+              await orderTimeModel.fetch(
+                  dIdx: deliverySiteModel.selected.idx, forceUpdate: true);
+              orderTimeModel.selectedOrderDate = DateTime.now();
+              orderTimeModel.selected =
+              orderTimeModel.orderTimes.isNullOrBlank ? null : orderTimeModel
+                  .orderTimes.first;
 
+              context.read<PromotionModel>().fetchByIdxDeliverySite(
+                  dIdx: context
+                      .read<DeliverySiteModel>()
+                      .selected
+                      .idx
+              );
+            }
           },
           cancel: '취소'
       );
@@ -362,17 +409,20 @@ class _OrderAddPageState extends State<OrderAddPage> {
     OrderTimeModel orderTimeModel = context.read();
     orderTimeModel.viewSelected = orderTimeModel.selected;
     orderTimeModel.viewSelectedOrderDate = orderTimeModel.selectedOrderDate;
+    orderTimeModel.viewSelectedOrderDate2 = orderTimeModel.selectedOrderDate2;
     // orderTimeModel
     //..clear()
     //..fetch(dIdx: deliverySiteModel.selected.idx, forceUpdate: true);
     DialogUtils.dialogYesOrNo(Get.context, '받는 날짜를 선택해주세요.',
         contents: OrderAddOrderDateTimeSelectWidget(),
-        height: 450,
+        height: 510,
         confirm: '완료',
         onConfirm: (_) async {
+          if(orderTimeModel.viewSelected == null) return;
           orderTimeModel
             ..changeSelected(orderTimeModel.viewSelected)
-            ..changeSelectedOrderDate(orderTimeModel.viewSelectedOrderDate);
+            ..changeSelectedOrderDate(orderTimeModel.viewSelectedOrderDate)
+            ..changeSelectedOrderDate2(orderTimeModel.viewSelectedOrderDate2);
         },
         cancel: '취소'
     );
@@ -412,6 +462,8 @@ class _OrderAddPageState extends State<OrderAddPage> {
         height: 450,
         confirm: '추가',
         onConfirm: (_) async {
+          int q = int.tryParse(controller.text) ?? 0;
+          if(productModel.viewSelected == null || q < 1) return;
           setState(() {
             Product selected = productModel.viewSelected;
             items.add(OrderItemRequest(
@@ -420,7 +472,8 @@ class _OrderAddPageState extends State<OrderAddPage> {
               quantity: int.parse(controller.text),
               textProduct: selected.productInfo.name,
               orderItemSubs: [],
-              index: items.isNullOrBlank ? 0 : items.last.index + 1
+              index: items.isNullOrBlank ? 0 : items.last.index + 1,
+              salesCost: selected.salePrice
             ));
             productModel.viewSelected = null;
           });
@@ -451,25 +504,75 @@ class _OrderAddPageState extends State<OrderAddPage> {
       return;
     }
 
+    if(context.read<OrderTimeModel>().selectedOrderDate2 != null) {
+      DateTime dt1 = DateTime(context.read<OrderTimeModel>().selectedOrderDate.year, context.read<OrderTimeModel>().selectedOrderDate.month, context.read<OrderTimeModel>().selectedOrderDate.day);
+      DateTime dt2 = DateTime(context.read<OrderTimeModel>().selectedOrderDate2.year, context.read<OrderTimeModel>().selectedOrderDate2.month, context.read<OrderTimeModel>().selectedOrderDate2.day);
 
+      int d = dt2.difference(dt1).inDays;
+      DialogUtils.dialogYesOrNo(context,
+        '총 $d개의 주문이 추가됩니다.\n계속 하시겠습니까?\n( ${DateFormat('MM월 dd일').format(dt1)} ~ ${DateFormat('MM월 dd일').format(dt2)} )',
+        height: 180,
+        onConfirm: (_) async {
+          context.read<OrderModel>().changeIsSaving(true);
+          DateTime start = dt1;
+          for(int i = 0; i<=d; i++) {
+            OrderResponse response = await _saveOrder(start);
+            if(response == null) {
+              ToastUtils.showToast(msg: '주문 추가 실패');
+            }
+            start = start.add(Duration(days: 1));
+          }
+          context.read<OrderModel>().changeIsSaving(false);
+          _refresh();
+          Get.back();
+        }
+      );
+      return;
+    }
+
+    context.read<OrderModel>().changeIsSaving(true);
+    OrderResponse response = await _saveOrder(context.read<OrderTimeModel>().selectedOrderDate);
+    if(response == null) {
+      ToastUtils.showToast(msg: '주문 추가 실패');
+    } else {
+      ToastUtils.showToast(msg: '${response.boxNumber}번 추가 완료');
+      _refresh();
+      Get.back();
+    }
+    context.read<OrderModel>().changeIsSaving(false);
+  }
+
+  Future<OrderResponse> _saveOrder(DateTime orderDate) async {
+    print(context.read<PromotionModel>()?.promotions?.map((node) => node.idx)?.toSet() ?? []);
     OrderResponse response = await context.read<OrderModel>().save(
-      sIdx: context.read<SignInModel>().ownerInfo.idxStore,
-      orderRequest: OrderRequest(
-          orderDate: context.read<OrderTimeModel>().selectedOrderDate,
+        sIdx: context.read<SignInModel>().ownerInfo.idxStore,
+        orderRequest: OrderRequest(
+          orderDate: orderDate,
           idxOrderTime: context.read<OrderTimeModel>().selected.idx,
           idxDeliveryDetailSite: context.read<DeliveryDetailSiteModel>().selected.idx,
           paymentType: context.read<PaymentModel>().selectedPaymentType,
           usingPoint: 0,
           cashReceiptType: CashReceiptType.PERSONAL_PHONE_NUMBER,
           orderItems: this.items,
-          note: this.note
-      )
+          note: this.note,
+          idxesUsingPromotions: context.read<PromotionModel>()?.promotions?.map((node) => node.idx)?.toSet() ?? []
+        )
     );
-    if(response == null) {
-      ToastUtils.showToast(msg: '주문 추가 실패');
-    } else {
-      ToastUtils.showToast(msg: '${response.boxNumber}번 추가 완료');
-      Get.back();
-    }
+    return response;
+  }
+
+  void _refresh() async {
+    // refresh
+    OrderModel orderModel = context.read();
+    OrderTimeModel orderTimeModel = context.read();
+    DeliverySiteModel deliverySiteModel = context.read();
+    DeliveryDetailSiteModel detailSiteModel = context.read();
+    await orderModel.fetchAll(
+        dIdx: deliverySiteModel.userDeliverySite?.idx,
+        ddIdx: detailSiteModel.userDeliveryDetailSite?.idx,
+        otIdx: orderTimeModel.userOrderTime?.idx,
+        oDate: orderTimeModel.userOrderDate,
+        isForceUpdate: true
+    );
   }
 }

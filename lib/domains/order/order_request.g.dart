@@ -32,6 +32,7 @@ OrderRequest _$OrderRequestFromJson(Map<String, dynamic> json) {
         ?.toList(),
     vbankName: json['vbankName'] as String,
     note: json['note'] as String,
+    phoneNumber: json['phoneNumber'] as String,
   );
 }
 
@@ -51,6 +52,7 @@ Map<String, dynamic> _$OrderRequestToJson(OrderRequest instance) =>
       'orderItems': instance.orderItems?.map((e) => e?.toJson())?.toList(),
       'vbankName': instance.vbankName,
       'note': instance.note,
+      'phoneNumber': instance.phoneNumber
     };
 
 T _$enumDecode<T>(

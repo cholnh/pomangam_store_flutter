@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
 import 'package:pomangam/providers/store/store_model.dart';
+import 'package:pomangam/views/mobile/pages/home/order/order_status_board_page.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_divider.dart';
 import 'package:pomangam/views/mobile/widgets/home/category/home_category_widget.dart';
@@ -30,6 +31,8 @@ class HomePage extends StatelessWidget {
             children: [
               HomeStoreInfoWidget(),
               CustomDivider(),
+              _menu(title: '주문 현황판', icon: Icon(Icons.insert_chart_outlined, size: 20, color: Colors.black), onTap: () => Get.to(OrderStatusBoardPage())),
+              CustomDivider(),
               HomeCategoryWidget(),
               CustomDivider(),
               _logout(),
@@ -38,6 +41,28 @@ class HomePage extends StatelessWidget {
           )
         )
       )
+    );
+  }
+
+  Widget _menu({String title, Icon icon, Function onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Material(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Row(
+            children: [
+              icon,
+              SizedBox(width: 15),
+              Text('$title', style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black
+              ))
+            ],
+          ),
+        ),
+      ),
     );
   }
 

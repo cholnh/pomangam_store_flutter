@@ -24,6 +24,7 @@ OrderResponse _$OrderResponseFromJson(Map<String, dynamic> json) {
     ordererName: json['ordererName'] as String,
     ordererPn: json['ordererPn'] as String,
     note: json['note'] as String,
+    phoneNumber: json['phoneNumber'] as String,
     usingPoint: json['usingPoint'] as int,
     usingCoupons: (json['usingCoupons'] as List)
         ?.map((e) =>
@@ -70,6 +71,7 @@ Map<String, dynamic> _$OrderResponseToJson(OrderResponse instance) =>
       'ordererName': instance.ordererName,
       'ordererPn': instance.ordererPn,
       'note': instance.note,
+      'phoneNumber': instance.phoneNumber,
       'usingPoint': instance.usingPoint,
       'usingCoupons': instance.usingCoupons?.map((e) => e?.toJson())?.toList(),
       'usingPromotions':

@@ -24,7 +24,6 @@ class ProductModel with ChangeNotifier {
   }) async {
     try {
       this.products = await _productRepository.findByIdxStore(sIdx: sIdx);
-      print(products);
     } catch (error) {
       debug('[Debug] ProductModel.fetch Error', error: error);
     } finally {

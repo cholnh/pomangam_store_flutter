@@ -18,6 +18,8 @@ class OrderTimeModel with ChangeNotifier {
 
   DateTime selectedOrderDate;
   DateTime viewSelectedOrderDate;
+  DateTime selectedOrderDate2;
+  DateTime viewSelectedOrderDate2;
   OrderTime selected;
   OrderTime viewSelected;
 
@@ -42,6 +44,16 @@ class OrderTimeModel with ChangeNotifier {
 
   void changeViewSelectedOrderDate(DateTime orderDate) {
     this.viewSelectedOrderDate = orderDate;
+    notifyListeners();
+  }
+
+  void changeSelectedOrderDate2(DateTime orderDate) {
+    this.selectedOrderDate2 = orderDate;
+    notifyListeners();
+  }
+
+  void changeViewSelectedOrderDate2(DateTime orderDate) {
+    this.viewSelectedOrderDate2 = orderDate;
     notifyListeners();
   }
 

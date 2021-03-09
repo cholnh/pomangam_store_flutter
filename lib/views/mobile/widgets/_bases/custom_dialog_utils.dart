@@ -4,13 +4,13 @@ import 'package:flutter/widgets.dart';
 
 
 class DialogUtils {
-  static void dialog(BuildContext context, String title, {
+  static dialog(BuildContext context, String title, {
     double height = 130,
     Widget contents,
     Function(BuildContext) onPressed,
     Function whenComplete
-  }) {
-    showDialog(
+  }) async {
+    return await showDialog(
       context: context,
       barrierDismissible: true,
       builder: (dialogContext) => Dialog(
@@ -73,15 +73,15 @@ class DialogUtils {
     });
   }
 
-  static void dialogYesOrNo(BuildContext context, String title, {
+  static dialogYesOrNo(BuildContext context, String title, {
     double height = 130,
     Widget contents,
     String confirm = '예',
     String cancel = '아니오',
     Function(BuildContext) onConfirm,
     Function(BuildContext) onCancel,
-  }) {
-    showDialog(
+  }) async {
+    return await showDialog(
       context: context,
       barrierDismissible: true,
       builder: (dialogContext) => Dialog(

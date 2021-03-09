@@ -14,12 +14,13 @@ class OrderItemRequest {
 
   int index;
   String textProduct;
+  int salesCost;
 
   OrderItemRequest({
     this.idxStore, this.idxProduct, this.quantity,
     this.requirement, this.orderItemSubs,
 
-    this.index, this.textProduct
+    this.index, this.textProduct, this.salesCost
   });
 
   Map<String, dynamic> toJson() => _$OrderItemRequestToJson(this);

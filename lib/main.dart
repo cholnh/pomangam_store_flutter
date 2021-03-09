@@ -9,13 +9,16 @@ import 'package:pomangam/providers/deliverysite/delivery_site_model.dart';
 import 'package:pomangam/providers/deliverysite/detail/delivery_detail_site_model.dart';
 import 'package:pomangam/providers/order/order_history_model.dart';
 import 'package:pomangam/providers/order/order_model.dart';
+import 'package:pomangam/providers/order/order_status_model.dart';
 import 'package:pomangam/providers/order/order_view_model.dart';
 import 'package:pomangam/providers/order/order_view_sort_model.dart';
 import 'package:pomangam/providers/order/time/order_time_model.dart';
 import 'package:pomangam/providers/payment/payment_model.dart';
 import 'package:pomangam/providers/product/product_model.dart';
+import 'package:pomangam/providers/promotion/promotion_model.dart';
 import 'package:pomangam/providers/store/store_model.dart';
 import 'package:pomangam/providers/vbank/vbank_model.dart';
+import 'package:pomangam/providers/version/version_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pomangam/_bases/theme/custom_theme.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
@@ -63,6 +66,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => VBankModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => ProductModel(), lazy: true),
         ChangeNotifierProvider(create: (_) => PaymentModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => PromotionModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => VersionModel(), lazy: true),
+        ChangeNotifierProvider(create: (_) => OrderStatusModel(), lazy: true),
 
       ],
       child: GetMaterialApp(
@@ -81,7 +87,7 @@ class MyApp extends StatelessWidget {
 
         builder: (context, child) => _webView(
             context: context,
-            enabled: kIsPcWeb(context: context),
+            enabled: !context.watch<OrderViewModel>().isFullScreen && kIsPcWeb(context: context),
             child: child
         ),
 

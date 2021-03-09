@@ -16,7 +16,7 @@ class BasicAppBar extends AppBar {
     automaticallyImplyLeading: automaticallyImplyLeading,
     leading: isLeading ? IconButton(
       icon: leadingIcon == null ? Icon(Icons.close, color: Theme.of(Get.context).iconTheme.color, size: 20) : leadingIcon,
-      onPressed: onLeadingTap == null ? () => Get.back() : () {},
+      onPressed: onLeadingTap == null ? () => Get.back() : onLeadingTap,
     ) : null,
     title: Text('$title', style: TextStyle(
       color: Theme.of(Get.context).textTheme.headline1.color,

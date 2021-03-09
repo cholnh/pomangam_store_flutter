@@ -129,6 +129,7 @@ class OrderModel with ChangeNotifier {
         });
       }
     } catch (error) {
+      print(error);
       debug('OrderModel.fetchNew Error', error: error);
     } finally {
       isNewFetching = false;
@@ -258,16 +259,18 @@ class OrderModel with ChangeNotifier {
     }
   }
 
+  void changeIsSaving(bool tf) {
+    this.isSaving = tf;
+    notifyListeners();
+  }
+
   Future<OrderResponse> save({
     @required int sIdx,
     @required OrderRequest orderRequest
   }) async {
-    if(isSaving) return null;
 
     this.orderResponse = null;
-    this.isSaving = true;
-    notifyListeners();
-
+    print('save $orderRequest');
     try {
       this.orderResponse = await _orderRepository.saveOrder(
         sIdx: sIdx,
@@ -277,7 +280,6 @@ class OrderModel with ChangeNotifier {
       print('[Debug] OrderModel.saveOrder Error - $error');
       return null;
     } finally {
-      this.isSaving = false;
       notifyListeners();
     }
     return this.orderResponse;
@@ -354,9 +356,7 @@ class OrderModel with ChangeNotifier {
     for(OrderResponse order in this.orders) {
       for(OrderItemResponse item in order.orderItems) {
         if(item.idx == oIdx) {
-          print('${item.isSelected}');
           item.isSelected = item.isSelected == null ? true : !item.isSelected;
-          print('${item.isSelected}');
           notifyListeners();
           return;
         }

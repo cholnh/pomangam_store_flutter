@@ -48,11 +48,13 @@ class OrderRequest {
 
   String note;
 
+  String phoneNumber;
+
   OrderRequest({
     this.orderDate, this.idxOrderTime, this.idxDeliveryDetailSite, this.idxFcmToken,
     this.paymentType, this.usingPoint, this.usingCouponCode, this.idxesUsingCoupons,
     this.idxesUsingPromotions, this.cashReceipt, this.cashReceiptType, this.orderItems, this.vbankName,
-    this.note
+    this.note, this.phoneNumber
   });
 
   Map<String, dynamic> toJson() => _$OrderRequestToJson(this);

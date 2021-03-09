@@ -42,6 +42,37 @@ class OrderAddOrderDateTimeSelectWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
+        GestureDetector(
+          onTap: _showDatePicker2,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            color: Colors.grey[100],
+            height: 50,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(orderTimeModel.viewSelectedOrderDate2 == null || isSameDay(orderTimeModel.viewSelectedOrderDate, orderTimeModel.viewSelectedOrderDate2)
+                        ? '기간 설정'
+                        : ' ~ ${DateFormat('yyyy년 MM월 dd일').format(orderTimeModel.viewSelectedOrderDate2)}'
+                    , style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15
+                  )),
+                  Text('변경', style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold
+                  )),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 0),
           padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -97,11 +128,37 @@ class OrderAddOrderDateTimeSelectWidget extends StatelessWidget {
       maxDateTime: max,
       onConfirm: (DateTime dateTime, List<int> selectedIndex) {
         OrderTimeModel orderTimeModel = Get.context.read();
-        orderTimeModel.changeViewSelectedOrderDate(dateTime);
+        orderTimeModel
+          ..changeViewSelectedOrderDate(dateTime)
+          ..changeViewSelectedOrderDate2(null);
       },
       pickerTheme: DateTimePickerTheme(
         pickerHeight: 150,
       )
+    );
+  }
+
+  void _showDatePicker2() {
+    OrderTimeModel orderTimeModel = Get.context.read();
+    DateTime now = DateTime.now();
+    DateTime max = DateTime(now.year, 12, 31);
+    DatePicker.showDatePicker(
+        Get.context,
+        initialDateTime: orderTimeModel.selectedOrderDate2 ?? orderTimeModel.viewSelectedOrderDate ?? now,
+        locale: DateTimePickerLocale.ko,
+        minDateTime: orderTimeModel.viewSelectedOrderDate ?? now,
+        maxDateTime: max,
+        onConfirm: (DateTime dateTime, List<int> selectedIndex) {
+          OrderTimeModel orderTimeModel = Get.context.read();
+          if(isSameDay(orderTimeModel.viewSelectedOrderDate, dateTime)) {
+            orderTimeModel.changeViewSelectedOrderDate2(null);
+          } else {
+            orderTimeModel.changeViewSelectedOrderDate2(dateTime);
+          }
+        },
+        pickerTheme: DateTimePickerTheme(
+          pickerHeight: 150,
+        )
     );
   }
 
@@ -113,4 +170,7 @@ class OrderAddOrderDateTimeSelectWidget extends StatelessWidget {
     return DateFormat('$ampm hh시 mm분').format(dt);
   }
 
+  bool isSameDay(DateTime dt1, DateTime dt2) {
+    return dt1.year == dt2.year && dt1.month == dt2.month && dt1.day == dt2.day;
+  }
 }

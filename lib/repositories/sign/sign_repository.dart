@@ -30,7 +30,8 @@ class SignRepository {
         ..saveToDisk()
         ..saveToDioHeader();
 
-      (await SharedPreferences.getInstance()).setString(s.userId, id);
+      (await SharedPreferences.getInstance()).setString(s.userId, id.trim());
+      (await SharedPreferences.getInstance()).setString(s.userPw, password);
       owner = Owner.fromJson((await api.get(url: '/store/owners/$id')).data);
 
       await initializer.initializeNotification();

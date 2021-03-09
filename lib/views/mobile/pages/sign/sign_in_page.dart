@@ -29,8 +29,10 @@ class _SignInPageState extends State<SignInPage> {
 
   void _init() async {
     String storedId = (await SharedPreferences.getInstance()).getString(s.userId);
+    String storedPw = (await SharedPreferences.getInstance()).getString(s.userPw);
     if(!storedId.isNullOrBlank) {
       _idController.text = storedId;
+      _pwController.text = storedPw;
       FocusScope.of(context).requestFocus(_pwFocus);
     } else {
       FocusScope.of(context).requestFocus(_idFocus);
@@ -103,12 +105,10 @@ class _SignInPageState extends State<SignInPage> {
     String id = _idController.text;
     String pw = _pwController.text;
     if(id.isEmpty) {
-      DialogUtils.dialog(context, '아이디를 입력해주세요.');
-      FocusScope.of(context).requestFocus(_idFocus);
+      DialogUtils.dialog(context, '아이디를 입력해주세요.', onPressed: (_) => FocusScope.of(context).requestFocus(_idFocus));
     }
     if(pw.isEmpty) {
-      DialogUtils.dialog(context, '비밀번호를 입력해주세요.');
-      FocusScope.of(context).requestFocus(_pwFocus);
+      DialogUtils.dialog(context, '비밀번호를 입력해주세요.', onPressed: (_) => FocusScope.of(context).requestFocus(_pwFocus));
     }
 
     bool isSignIn = await context.read<SignInModel>().signIn(id: id, password: pw);
@@ -116,7 +116,7 @@ class _SignInPageState extends State<SignInPage> {
       Get.offAll(SplashPage());
     } else {
       DialogUtils.dialog(context, '잘못된 계정 정보입니다.');
-      FocusScope.of(context).requestFocus(_pwFocus);
+      //FocusScope.of(context).requestFocus(_pwFocus);
     }
   }
 }

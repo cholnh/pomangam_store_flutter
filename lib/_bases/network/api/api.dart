@@ -12,7 +12,6 @@ import 'package:pomangam/_bases/network/repository/authorization_repository.dart
 import 'package:pomangam/_bases/network/repository/resource_repository.dart';
 import 'package:pomangam/domains/_bases/page_request.dart';
 import 'package:pomangam/providers/sign/sign_in_model.dart';
-import 'package:pomangam/views/mobile/pages/_bases/base_page.dart';
 import 'package:pomangam/views/mobile/widgets/_bases/custom_dialog_utils.dart';
 import 'package:pomangam/views/splash_page.dart';
 import 'package:provider/provider.dart';
@@ -76,13 +75,14 @@ class Api implements NetworkService {
   Future<Response> get({
     @required String url,
     PageRequest pageRequest,
-    Function fallBack
+    Function fallBack,
+    bool isOnError = true
   }) {
     if(pageRequest != null) {
       url += url.contains('?') ? '&$pageRequest' :  '?$pageRequest';
     }
     Function logic = () => resourceRepository.get(url: url);
-    return logic().catchError((error) => _errorHandler(error, fallBack == null ? logic : fallBack));
+    return logic().catchError(isOnError ? (error) => _errorHandler(error, fallBack == null ? logic : fallBack) : (error){});
   }
 
 
@@ -97,10 +97,11 @@ class Api implements NetworkService {
   @override
   Future<Response> post({
     @required String url,
-    dynamic data
+    dynamic data,
+    bool isOnError = true
   }) {
     Function logic = () => resourceRepository.post(url: url, data: data);
-    return logic().catchError((error) => _errorHandler(error, logic));
+    return logic().catchError(isOnError ? (error) => _errorHandler(error, logic) : (error){});
   }
 
 
@@ -115,10 +116,11 @@ class Api implements NetworkService {
   @override
   Future<Response> patch({
     @required String url,
-    dynamic data
+    dynamic data,
+    bool isOnError = true
   }) {
     Function logic = () => resourceRepository.patch(url: url, data: data);
-    return logic().catchError((error) => _errorHandler(error, logic));
+    return logic().catchError(isOnError ? (error) => _errorHandler(error, logic) : (error){});
   }
 
 
@@ -134,10 +136,11 @@ class Api implements NetworkService {
   @override
   Future<Response> put({
     @required String url,
-    dynamic data
+    dynamic data,
+    bool isOnError = true
   }) {
     Function logic = () => resourceRepository.put(url: url, data: data);
-    return logic().catchError((error) => _errorHandler(error, logic));
+    return logic().catchError(isOnError ? (error) => _errorHandler(error, logic) : (error){});
   }
 
 
@@ -150,10 +153,11 @@ class Api implements NetworkService {
   ///
   @override
   Future<Response> delete({
-    @required String url
+    @required String url,
+    bool isOnError = true
   }) {
     Function logic = () => resourceRepository.delete(url: url);
-    return logic().catchError((error) => _errorHandler(error, logic));
+    return logic().catchError(isOnError ? (error) => _errorHandler(error, logic) : (error){});
   }
 
   _errorHandler(error, logic) async {

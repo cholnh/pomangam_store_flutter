@@ -128,7 +128,7 @@ class Initializer {
   });
 
   Future<bool> _canInitializeNotification() async {
-    String id = await loadInPrefs(s.userId);
+    String id = (await loadInPrefs(s.userId)).toString().trim();
     return !kIsWeb && (Platform.isAndroid || Platform.isIOS) &&
         (id != null && id.isNotEmpty);
   }
@@ -147,9 +147,9 @@ class Initializer {
         ..saveToDisk()
         ..saveToDioHeader();
 
-        String id = await loadInPrefs(s.userId);
+        String id = (await loadInPrefs(s.userId)).toString().trim();
         if(token.tokenMode == TokenMode.LOGIN && id.isNotEmpty) {
-          Owner ownerInfo = Owner.fromJson((await api.get(url: '/store/owners/$id')).data);
+          Owner ownerInfo = Owner.fromJson((await api.get(url: '/store/owners/$id', isOnError: false)).data);
           Get.context.read<SignInModel>()
           ..ownerInfo = ownerInfo
           ..signInState = SignInState.SIGNED_IN;
@@ -238,7 +238,7 @@ class Initializer {
 
   Future<int> _postFcmToken({String token}) async {
     FcmOwnerTokenRequest requestData = FcmOwnerTokenRequest(token: token);
-    requestData.id = await loadInPrefs(s.userId);
+    requestData.id = (await loadInPrefs(s.userId)).toString().trim();
 
     FcmToken fcmToken;
     try {

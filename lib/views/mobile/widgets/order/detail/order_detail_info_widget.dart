@@ -47,13 +47,13 @@ class OrderDetailInfoWidget extends StatelessWidget {
               rightText: '${order.ordererName}'
           ),
           if(order.ordererName != null) SizedBox(height: height),
-          if(order.ordererPn != null) _text(
+          if(!order.ordererPn.isNullOrBlank || !order.phoneNumber.isNullOrBlank) _text(
               leftText: '전화번호',
-              rightText: '${order.ordererPn}',
+              rightText: !order.ordererPn.isNullOrBlank ? '${order.ordererPn}' : '${order.phoneNumber}',
               rightUnderline: true,
               onRightTap: () async {
                 if(!kIsWeb) {
-                  String tel = 'tel:${order.ordererPn}';
+                  String tel = 'tel:${!order.ordererPn.isNullOrBlank ? order.ordererPn : order.phoneNumber}';
                   if (await canLaunch(tel)) {
                     await launch(tel);
                   } else {
@@ -62,7 +62,7 @@ class OrderDetailInfoWidget extends StatelessWidget {
                 }
               }
           ),
-          if(order.ordererPn != null) SizedBox(height: height),
+          if(!order.ordererPn.isNullOrBlank || !order.phoneNumber.isNullOrBlank) SizedBox(height: height),
           _text(
               leftText: '승인일시',
               rightText: '${_date(order.registerDate)}'
